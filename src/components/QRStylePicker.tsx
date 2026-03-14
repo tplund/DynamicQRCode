@@ -1,19 +1,71 @@
 "use client";
 
-import { PRESETS, type QRStyleConfig } from "@/lib/types";
+import { PRESETS, type QRStyleConfig, type DotType, type CornerDotType, type CornerSquareType } from "@/lib/types";
 
 interface QRStylePickerProps {
   style: QRStyleConfig;
   onChange: (style: QRStyleConfig) => void;
 }
 
-const DOT_TYPES = [
+const DOT_TYPES: { value: DotType; label: string }[] = [
   { value: "square", label: "Firkantet" },
   { value: "rounded", label: "Rund" },
   { value: "dots", label: "Dots" },
   { value: "classy", label: "Classy" },
   { value: "classy-rounded", label: "Classy Rund" },
-] as const;
+  { value: "extra-rounded", label: "Ekstra Rund" },
+];
+
+const CORNER_DOT_TYPES: { value: CornerDotType; label: string }[] = [
+  { value: "dot", label: "Rund" },
+  { value: "square", label: "Firkantet" },
+  { value: "rounded", label: "Afrundet" },
+  { value: "classy", label: "Classy" },
+  { value: "classy-rounded", label: "Classy Rund" },
+  { value: "extra-rounded", label: "Ekstra Rund" },
+];
+
+const CORNER_SQUARE_TYPES: { value: CornerSquareType; label: string }[] = [
+  { value: "square", label: "Firkantet" },
+  { value: "dot", label: "Rund" },
+  { value: "extra-rounded", label: "Ekstra Rund" },
+  { value: "rounded", label: "Afrundet" },
+  { value: "classy", label: "Classy" },
+  { value: "classy-rounded", label: "Classy Rund" },
+];
+
+function ButtonGroup<T extends string>({
+  label,
+  options,
+  value,
+  onSelect,
+}: {
+  label: string;
+  options: { value: T; label: string }[];
+  value: T | undefined;
+  onSelect: (v: T) => void;
+}) {
+  return (
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
+      <div className="flex gap-1.5 flex-wrap">
+        {options.map((opt) => (
+          <button
+            key={opt.value}
+            onClick={() => onSelect(opt.value)}
+            className={`rounded-lg border px-2.5 py-1 text-xs transition-colors cursor-pointer ${
+              value === opt.value
+                ? "border-gray-900 bg-gray-900 text-white"
+                : "border-gray-300 hover:border-gray-500"
+            }`}
+          >
+            {opt.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function QRStylePicker({ style, onChange }: QRStylePickerProps) {
   const update = (partial: Partial<QRStyleConfig>) => {
@@ -44,24 +96,28 @@ export default function QRStylePicker({ style, onChange }: QRStylePickerProps) {
       </div>
 
       {/* Dot type */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Dot-form</label>
-        <div className="flex gap-2 flex-wrap">
-          {DOT_TYPES.map((dt) => (
-            <button
-              key={dt.value}
-              onClick={() => update({ dot_type: dt.value })}
-              className={`rounded-lg border px-3 py-1.5 text-sm transition-colors cursor-pointer ${
-                style.dot_type === dt.value
-                  ? "border-gray-900 bg-gray-900 text-white"
-                  : "border-gray-300 hover:border-gray-500"
-              }`}
-            >
-              {dt.label}
-            </button>
-          ))}
-        </div>
-      </div>
+      <ButtonGroup
+        label="Dot-form"
+        options={DOT_TYPES}
+        value={style.dot_type}
+        onSelect={(v) => update({ dot_type: v })}
+      />
+
+      {/* Corner dot type */}
+      <ButtonGroup
+        label="Hjørne-dot"
+        options={CORNER_DOT_TYPES}
+        value={style.corner_dot_type || "dot"}
+        onSelect={(v) => update({ corner_dot_type: v })}
+      />
+
+      {/* Corner square type */}
+      <ButtonGroup
+        label="Hjørne-ramme"
+        options={CORNER_SQUARE_TYPES}
+        value={style.corner_square_type || "extra-rounded"}
+        onSelect={(v) => update({ corner_square_type: v })}
+      />
 
       {/* Colors */}
       <div className="grid grid-cols-2 gap-4">
