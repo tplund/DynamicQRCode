@@ -4,6 +4,7 @@ export interface QRCode {
   destination_url: string;
   label: string;
   style_config: QRStyleConfig;
+  logo_data?: string | null;
   created_at: string;
   updated_at: string;
   scan_count?: number;
@@ -13,6 +14,10 @@ export interface QRCode {
 export type DotType = "square" | "rounded" | "dots" | "classy" | "classy-rounded" | "extra-rounded";
 export type CornerDotType = "square" | "dot" | DotType;
 export type CornerSquareType = "square" | "dot" | "extra-rounded" | DotType;
+export type ColorMode = "solid" | "gradient";
+export type GradientType = "linear" | "radial";
+export type QRShape = "square" | "circle";
+export type ExportFormat = "png" | "svg" | "jpeg" | "webp";
 
 export interface QRStyleConfig {
   dot_type: DotType;
@@ -21,6 +26,19 @@ export interface QRStyleConfig {
   corner_dot_type?: CornerDotType;
   corner_square_type?: CornerSquareType;
   size: number;
+  // Gradient
+  color_mode?: ColorMode;
+  gradient_type?: GradientType;
+  gradient_color1?: string;
+  gradient_color2?: string;
+  gradient_rotation?: number;
+  // Shape
+  shape?: QRShape;
+  // Logo
+  logo_size?: number;
+  logo_margin?: number;
+  // Export
+  export_format?: ExportFormat;
 }
 
 export interface Scan {
@@ -39,6 +57,9 @@ export const DEFAULT_STYLE: QRStyleConfig = {
   corner_dot_type: "dot",
   corner_square_type: "extra-rounded",
   size: 300,
+  color_mode: "solid",
+  shape: "square",
+  export_format: "png",
 };
 
 export const PRESETS: Record<string, { label: string; style: Partial<QRStyleConfig> }> = {
@@ -50,6 +71,7 @@ export const PRESETS: Record<string, { label: string; style: Partial<QRStyleConf
       dot_type: "classy-rounded",
       corner_dot_type: "dot",
       corner_square_type: "extra-rounded",
+      color_mode: "solid",
     },
   },
   dark: {
@@ -60,6 +82,7 @@ export const PRESETS: Record<string, { label: string; style: Partial<QRStyleConf
       dot_type: "classy-rounded",
       corner_dot_type: "dot",
       corner_square_type: "extra-rounded",
+      color_mode: "solid",
     },
   },
   classic: {
@@ -70,6 +93,37 @@ export const PRESETS: Record<string, { label: string; style: Partial<QRStyleConf
       dot_type: "square",
       corner_dot_type: "square",
       corner_square_type: "square",
+      color_mode: "solid",
+    },
+  },
+  ocean: {
+    label: "Ocean",
+    style: {
+      fg_color: "#0077B6",
+      bg_color: "#FFFFFF",
+      dot_type: "rounded",
+      corner_dot_type: "dot",
+      corner_square_type: "extra-rounded",
+      color_mode: "gradient",
+      gradient_type: "linear",
+      gradient_color1: "#0077B6",
+      gradient_color2: "#00B4D8",
+      gradient_rotation: 135,
+    },
+  },
+  sunset: {
+    label: "Solnedgang",
+    style: {
+      fg_color: "#E63946",
+      bg_color: "#FFFFFF",
+      dot_type: "dots",
+      corner_dot_type: "dot",
+      corner_square_type: "dot",
+      color_mode: "gradient",
+      gradient_type: "linear",
+      gradient_color1: "#E63946",
+      gradient_color2: "#F4A261",
+      gradient_rotation: 45,
     },
   },
   elegant: {
@@ -80,6 +134,7 @@ export const PRESETS: Record<string, { label: string; style: Partial<QRStyleConf
       dot_type: "dots",
       corner_dot_type: "dot",
       corner_square_type: "dot",
+      color_mode: "solid",
     },
   },
   modern: {
@@ -90,6 +145,7 @@ export const PRESETS: Record<string, { label: string; style: Partial<QRStyleConf
       dot_type: "extra-rounded",
       corner_dot_type: "extra-rounded",
       corner_square_type: "extra-rounded",
+      color_mode: "solid",
     },
   },
   soft: {
@@ -100,6 +156,7 @@ export const PRESETS: Record<string, { label: string; style: Partial<QRStyleConf
       dot_type: "rounded",
       corner_dot_type: "rounded",
       corner_square_type: "rounded",
+      color_mode: "solid",
     },
   },
 };

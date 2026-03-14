@@ -50,6 +50,7 @@ export async function PATCH(
       ...(body.destinationUrl !== undefined && { destinationUrl: body.destinationUrl }),
       ...(body.label !== undefined && { label: body.label }),
       ...(body.styleConfig !== undefined && { styleConfig: body.styleConfig }),
+      ...(body.logoData !== undefined && { logoData: body.logoData }),
       updatedAt: new Date(),
     })
     .where(eq(qrCodes.id, id))

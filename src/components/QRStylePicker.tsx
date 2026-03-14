@@ -1,10 +1,23 @@
 "use client";
 
-import { PRESETS, type QRStyleConfig, type DotType, type CornerDotType, type CornerSquareType } from "@/lib/types";
+import { useState, useRef } from "react";
+import {
+  PRESETS,
+  type QRStyleConfig,
+  type DotType,
+  type CornerDotType,
+  type CornerSquareType,
+  type ColorMode,
+  type GradientType,
+  type QRShape,
+  type ExportFormat,
+} from "@/lib/types";
 
 interface QRStylePickerProps {
   style: QRStyleConfig;
   onChange: (style: QRStyleConfig) => void;
+  logoData?: string | null;
+  onLogoChange?: (data: string | null) => void;
 }
 
 const DOT_TYPES: { value: DotType; label: string }[] = [
@@ -67,22 +80,83 @@ function ButtonGroup<T extends string>({
   );
 }
 
-export default function QRStylePicker({ style, onChange }: QRStylePickerProps) {
+function Section({
+  title,
+  defaultOpen = true,
+  children,
+}: {
+  title: string;
+  defaultOpen?: boolean;
+  children: React.ReactNode;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className="border border-gray-200 rounded-lg overflow-hidden">
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex w-full items-center justify-between px-4 py-3 text-sm font-semibold text-gray-800 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
+      >
+        {title}
+        <span className="text-gray-400 text-xs">{open ? "▲" : "▼"}</span>
+      </button>
+      {open && <div className="p-4 space-y-4">{children}</div>}
+    </div>
+  );
+}
+
+export default function QRStylePicker({ style, onChange, logoData, onLogoChange }: QRStylePickerProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const update = (partial: Partial<QRStyleConfig>) => {
     onChange({ ...style, ...partial });
   };
 
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !onLogoChange) return;
+
+    if (file.size > 200 * 1024) {
+      // Resize large images using canvas
+      const img = new Image();
+      const reader = new FileReader();
+      reader.onload = () => {
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const maxDim = 200;
+          const scale = Math.min(maxDim / img.width, maxDim / img.height, 1);
+          canvas.width = img.width * scale;
+          canvas.height = img.height * scale;
+          const ctx = canvas.getContext("2d");
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            onLogoChange(canvas.toDataURL("image/png", 0.8));
+          }
+        };
+        img.src = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      const reader = new FileReader();
+      reader.onload = () => {
+        onLogoChange(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Reset input so same file can be re-selected
+    e.target.value = "";
+  };
+
   return (
-    <div className="space-y-5">
+    <div className="space-y-3">
       {/* Presets */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Forudindstillinger</label>
+      <Section title="Forudindstillinger" defaultOpen={true}>
         <div className="flex gap-2 flex-wrap">
           {Object.entries(PRESETS).map(([key, preset]) => (
             <button
               key={key}
               onClick={() => update(preset.style)}
-              className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm hover:border-gray-500 transition-colors cursor-pointer"
+              className="rounded-lg border px-3 py-1.5 text-sm hover:opacity-80 transition-all cursor-pointer"
               style={{
                 backgroundColor: preset.style.bg_color,
                 color: preset.style.fg_color,
@@ -93,85 +167,280 @@ export default function QRStylePicker({ style, onChange }: QRStylePickerProps) {
             </button>
           ))}
         </div>
-      </div>
+      </Section>
 
-      {/* Dot type */}
-      <ButtonGroup
-        label="Dot-form"
-        options={DOT_TYPES}
-        value={style.dot_type}
-        onSelect={(v) => update({ dot_type: v })}
-      />
-
-      {/* Corner dot type */}
-      <ButtonGroup
-        label="Hjørne-dot"
-        options={CORNER_DOT_TYPES}
-        value={style.corner_dot_type || "dot"}
-        onSelect={(v) => update({ corner_dot_type: v })}
-      />
-
-      {/* Corner square type */}
-      <ButtonGroup
-        label="Hjørne-ramme"
-        options={CORNER_SQUARE_TYPES}
-        value={style.corner_square_type || "extra-rounded"}
-        onSelect={(v) => update({ corner_square_type: v })}
-      />
-
-      {/* Colors */}
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Forgrund</label>
-          <div className="flex items-center gap-2">
-            <input
-              type="color"
-              value={style.fg_color}
-              onChange={(e) => update({ fg_color: e.target.value })}
-              className="h-10 w-10 cursor-pointer rounded border border-gray-300"
-            />
-            <input
-              type="text"
-              value={style.fg_color}
-              onChange={(e) => update({ fg_color: e.target.value })}
-              className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm font-mono"
-            />
-          </div>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Baggrund</label>
-          <div className="flex items-center gap-2">
-            <input
-              type="color"
-              value={style.bg_color}
-              onChange={(e) => update({ bg_color: e.target.value })}
-              className="h-10 w-10 cursor-pointer rounded border border-gray-300"
-            />
-            <input
-              type="text"
-              value={style.bg_color}
-              onChange={(e) => update({ bg_color: e.target.value })}
-              className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm font-mono"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Size */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Størrelse: {style.size}px
-        </label>
-        <input
-          type="range"
-          min={200}
-          max={600}
-          step={50}
-          value={style.size}
-          onChange={(e) => update({ size: Number(e.target.value) })}
-          className="w-full"
+      {/* Form & Stil */}
+      <Section title="Form & Stil" defaultOpen={true}>
+        {/* QR Shape */}
+        <ButtonGroup
+          label="QR-form"
+          options={[
+            { value: "square" as QRShape, label: "Firkantet" },
+            { value: "circle" as QRShape, label: "Cirkel" },
+          ]}
+          value={style.shape || "square"}
+          onSelect={(v) => update({ shape: v as QRShape })}
         />
-      </div>
+
+        <ButtonGroup
+          label="Dot-form"
+          options={DOT_TYPES}
+          value={style.dot_type}
+          onSelect={(v) => update({ dot_type: v })}
+        />
+
+        <ButtonGroup
+          label="Hjørne-dot"
+          options={CORNER_DOT_TYPES}
+          value={style.corner_dot_type || "dot"}
+          onSelect={(v) => update({ corner_dot_type: v })}
+        />
+
+        <ButtonGroup
+          label="Hjørne-ramme"
+          options={CORNER_SQUARE_TYPES}
+          value={style.corner_square_type || "extra-rounded"}
+          onSelect={(v) => update({ corner_square_type: v })}
+        />
+      </Section>
+
+      {/* Farver */}
+      <Section title="Farver" defaultOpen={true}>
+        {/* Color mode toggle */}
+        <ButtonGroup
+          label="Farvetilstand"
+          options={[
+            { value: "solid" as ColorMode, label: "Ensfarvet" },
+            { value: "gradient" as ColorMode, label: "Gradient" },
+          ]}
+          value={style.color_mode || "solid"}
+          onSelect={(v) => update({
+            color_mode: v as ColorMode,
+            ...(v === "gradient" && !style.gradient_color1 && {
+              gradient_color1: style.fg_color,
+              gradient_color2: "#0077B6",
+              gradient_type: "linear" as GradientType,
+              gradient_rotation: 135,
+            }),
+          })}
+        />
+
+        {style.color_mode === "gradient" ? (
+          <>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Farve 1</label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={style.gradient_color1 || style.fg_color}
+                    onChange={(e) => update({ gradient_color1: e.target.value })}
+                    className="h-10 w-10 cursor-pointer rounded border border-gray-300"
+                  />
+                  <input
+                    type="text"
+                    value={style.gradient_color1 || style.fg_color}
+                    onChange={(e) => update({ gradient_color1: e.target.value })}
+                    className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm font-mono"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Farve 2</label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={style.gradient_color2 || "#0077B6"}
+                    onChange={(e) => update({ gradient_color2: e.target.value })}
+                    className="h-10 w-10 cursor-pointer rounded border border-gray-300"
+                  />
+                  <input
+                    type="text"
+                    value={style.gradient_color2 || "#0077B6"}
+                    onChange={(e) => update({ gradient_color2: e.target.value })}
+                    className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm font-mono"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <ButtonGroup
+              label="Gradient-type"
+              options={[
+                { value: "linear" as GradientType, label: "Lineær" },
+                { value: "radial" as GradientType, label: "Radial" },
+              ]}
+              value={style.gradient_type || "linear"}
+              onSelect={(v) => update({ gradient_type: v as GradientType })}
+            />
+
+            {(style.gradient_type || "linear") === "linear" && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Rotation: {style.gradient_rotation || 0}°
+                </label>
+                <input
+                  type="range"
+                  min={0}
+                  max={360}
+                  step={15}
+                  value={style.gradient_rotation || 0}
+                  onChange={(e) => update({ gradient_rotation: Number(e.target.value) })}
+                  className="w-full"
+                />
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Forgrund</label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="color"
+                  value={style.fg_color}
+                  onChange={(e) => update({ fg_color: e.target.value })}
+                  className="h-10 w-10 cursor-pointer rounded border border-gray-300"
+                />
+                <input
+                  type="text"
+                  value={style.fg_color}
+                  onChange={(e) => update({ fg_color: e.target.value })}
+                  className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm font-mono"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Baggrund</label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="color"
+                  value={style.bg_color}
+                  onChange={(e) => update({ bg_color: e.target.value })}
+                  className="h-10 w-10 cursor-pointer rounded border border-gray-300"
+                />
+                <input
+                  type="text"
+                  value={style.bg_color}
+                  onChange={(e) => update({ bg_color: e.target.value })}
+                  className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm font-mono"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Background color is always available */}
+        {style.color_mode === "gradient" && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Baggrund</label>
+            <div className="flex items-center gap-2">
+              <input
+                type="color"
+                value={style.bg_color}
+                onChange={(e) => update({ bg_color: e.target.value })}
+                className="h-10 w-10 cursor-pointer rounded border border-gray-300"
+              />
+              <input
+                type="text"
+                value={style.bg_color}
+                onChange={(e) => update({ bg_color: e.target.value })}
+                className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm font-mono"
+              />
+            </div>
+          </div>
+        )}
+      </Section>
+
+      {/* Logo */}
+      <Section title="Logo" defaultOpen={false}>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleLogoUpload}
+          className="hidden"
+        />
+
+        {logoData ? (
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={logoData}
+                alt="Logo"
+                className="h-16 w-16 rounded-lg border border-gray-200 object-contain bg-white p-1"
+              />
+              <div className="flex gap-2">
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm hover:border-gray-500 transition-colors cursor-pointer"
+                >
+                  Skift logo
+                </button>
+                <button
+                  onClick={() => onLogoChange?.(null)}
+                  className="rounded-lg border border-red-300 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                >
+                  Fjern
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Logostørrelse: {Math.round((style.logo_size || 0.4) * 100)}%
+              </label>
+              <input
+                type="range"
+                min={0.2}
+                max={0.5}
+                step={0.05}
+                value={style.logo_size || 0.4}
+                onChange={(e) => update({ logo_size: Number(e.target.value) })}
+                className="w-full"
+              />
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="w-full rounded-lg border-2 border-dashed border-gray-300 px-4 py-6 text-sm text-gray-500 hover:border-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+          >
+            Klik for at uploade logo (maks 200KB)
+          </button>
+        )}
+      </Section>
+
+      {/* Eksport */}
+      <Section title="Eksport" defaultOpen={false}>
+        <ButtonGroup
+          label="Format"
+          options={[
+            { value: "png" as ExportFormat, label: "PNG" },
+            { value: "svg" as ExportFormat, label: "SVG" },
+            { value: "jpeg" as ExportFormat, label: "JPEG" },
+            { value: "webp" as ExportFormat, label: "WebP" },
+          ]}
+          value={style.export_format || "png"}
+          onSelect={(v) => update({ export_format: v as ExportFormat })}
+        />
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Størrelse: {style.size}px
+          </label>
+          <input
+            type="range"
+            min={200}
+            max={600}
+            step={50}
+            value={style.size}
+            onChange={(e) => update({ size: Number(e.target.value) })}
+            className="w-full"
+          />
+        </div>
+      </Section>
     </div>
   );
 }

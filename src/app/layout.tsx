@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "DynamicQR — Dynamiske QR-koder",
   description: "Opret og administrer dynamiske QR-koder med custom branding",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({

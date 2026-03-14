@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/db";
-import { qrCodes, scans } from "@/db/schema";
-import { desc, eq, sql } from "drizzle-orm";
+import { qrCodes } from "@/db/schema";
+import { desc, sql } from "drizzle-orm";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await request.json();
-  const { slug, destinationUrl, label, styleConfig } = body;
+  const { slug, destinationUrl, label, styleConfig, logoData } = body;
 
   try {
     const [created] = await db
@@ -41,6 +41,7 @@ export async function POST(request: NextRequest) {
         destinationUrl,
         label,
         styleConfig,
+        ...(logoData !== undefined && { logoData }),
       })
       .returning();
 

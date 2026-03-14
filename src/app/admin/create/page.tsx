@@ -12,6 +12,7 @@ export default function CreateQR() {
   const [destinationUrl, setDestinationUrl] = useState("");
   const [label, setLabel] = useState("");
   const [style, setStyle] = useState<QRStyleConfig>({ ...DEFAULT_STYLE });
+  const [logoData, setLogoData] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
@@ -31,6 +32,7 @@ export default function CreateQR() {
         destinationUrl,
         label,
         styleConfig: style,
+        logoData,
       }),
     });
 
@@ -91,7 +93,12 @@ export default function CreateQR() {
 
           <hr className="border-gray-200" />
 
-          <QRStylePicker style={style} onChange={setStyle} />
+          <QRStylePicker
+            style={style}
+            onChange={setStyle}
+            logoData={logoData}
+            onLogoChange={setLogoData}
+          />
 
           {error && <p className="text-sm text-red-600">{error}</p>}
 
@@ -106,7 +113,7 @@ export default function CreateQR() {
 
         <div className="lg:sticky lg:top-8">
           <label className="block text-sm font-medium text-gray-700 mb-3">Preview</label>
-          <QRCodePreview url={previewUrl} style={style} />
+          <QRCodePreview url={previewUrl} style={style} logoData={logoData} />
         </div>
       </div>
     </div>
