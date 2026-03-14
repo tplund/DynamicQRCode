@@ -20,6 +20,49 @@ interface QRStylePickerProps {
   onLogoChange?: (data: string | null) => void;
 }
 
+// SVG dot preview icons — shows what each dot style looks like
+function DotPreview({ type, size = 20 }: { type: string; size?: number }) {
+  const s = size;
+  const d = s / 4; // dot size
+  const gap = 1;
+
+  const dotProps = (x: number, y: number) => ({ x, y, width: d - gap, height: d - gap });
+  const circleProps = (x: number, y: number) => ({ cx: x + d / 2 - gap / 2, cy: y + d / 2 - gap / 2, r: (d - gap) / 2 });
+  const roundedRect = (x: number, y: number, r: number) => (
+    <rect {...dotProps(x, y)} rx={r} fill="currentColor" />
+  );
+
+  const positions = [
+    [0, 0], [d, 0], [2 * d, 0], [3 * d, 0],
+    [0, d], [3 * d, d],
+    [0, 2 * d], [d, 2 * d], [3 * d, 2 * d],
+    [0, 3 * d], [2 * d, 3 * d], [3 * d, 3 * d],
+  ];
+
+  return (
+    <svg width={s} height={s} viewBox={`0 0 ${s} ${s}`} className="shrink-0">
+      {positions.map(([x, y], i) => {
+        switch (type) {
+          case "square":
+            return <rect key={i} {...dotProps(x, y)} fill="currentColor" />;
+          case "dots":
+            return <circle key={i} {...circleProps(x, y)} fill="currentColor" />;
+          case "rounded":
+            return roundedRect(x, y, (d - gap) * 0.3);
+          case "classy":
+            return <rect key={i} {...dotProps(x, y)} rx={(d - gap) * 0.15} fill="currentColor" />;
+          case "classy-rounded":
+            return roundedRect(x, y, (d - gap) * 0.4);
+          case "extra-rounded":
+            return <circle key={i} {...circleProps(x, y)} fill="currentColor" />;
+          default:
+            return <rect key={i} {...dotProps(x, y)} fill="currentColor" />;
+        }
+      })}
+    </svg>
+  );
+}
+
 const DOT_TYPES: { value: DotType; label: string }[] = [
   { value: "square", label: "Firkantet" },
   { value: "rounded", label: "Rund" },
@@ -46,6 +89,43 @@ const CORNER_SQUARE_TYPES: { value: CornerSquareType; label: string }[] = [
   { value: "classy", label: "Classy" },
   { value: "classy-rounded", label: "Classy Rund" },
 ];
+
+function VisualButtonGroup<T extends string>({
+  label,
+  options,
+  value,
+  onSelect,
+  showPreview = false,
+}: {
+  label: string;
+  options: { value: T; label: string }[];
+  value: T | undefined;
+  onSelect: (v: T) => void;
+  showPreview?: boolean;
+}) {
+  return (
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
+      <div className="flex gap-1.5 flex-wrap">
+        {options.map((opt) => (
+          <button
+            key={opt.value}
+            onClick={() => onSelect(opt.value)}
+            title={opt.label}
+            className={`rounded-lg border px-2.5 py-1.5 text-xs transition-colors cursor-pointer flex items-center gap-1.5 ${
+              value === opt.value
+                ? "border-gray-900 bg-gray-900 text-white"
+                : "border-gray-300 hover:border-gray-500"
+            }`}
+          >
+            {showPreview && <DotPreview type={opt.value} size={16} />}
+            {opt.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function ButtonGroup<T extends string>({
   label,
@@ -116,7 +196,6 @@ export default function QRStylePicker({ style, onChange, logoData, onLogoChange 
     if (!file || !onLogoChange) return;
 
     if (file.size > 200 * 1024) {
-      // Resize large images using canvas
       const img = new Image();
       const reader = new FileReader();
       reader.onload = () => {
@@ -143,13 +222,12 @@ export default function QRStylePicker({ style, onChange, logoData, onLogoChange 
       reader.readAsDataURL(file);
     }
 
-    // Reset input so same file can be re-selected
     e.target.value = "";
   };
 
   return (
     <div className="space-y-3">
-      {/* Presets */}
+      {/* Presets — always open, lowest friction path */}
       <Section title="Forudindstillinger" defaultOpen={true}>
         <div className="flex gap-2 flex-wrap">
           {Object.entries(PRESETS).map(([key, preset]) => (
@@ -169,9 +247,8 @@ export default function QRStylePicker({ style, onChange, logoData, onLogoChange 
         </div>
       </Section>
 
-      {/* Form & Stil */}
-      <Section title="Form & Stil" defaultOpen={true}>
-        {/* QR Shape */}
+      {/* Form & Stil — closed by default to reduce overwhelm */}
+      <Section title="Form & Stil" defaultOpen={false}>
         <ButtonGroup
           label="QR-form"
           options={[
@@ -182,31 +259,33 @@ export default function QRStylePicker({ style, onChange, logoData, onLogoChange 
           onSelect={(v) => update({ shape: v as QRShape })}
         />
 
-        <ButtonGroup
+        <VisualButtonGroup
           label="Dot-form"
           options={DOT_TYPES}
           value={style.dot_type}
           onSelect={(v) => update({ dot_type: v })}
+          showPreview={true}
         />
 
-        <ButtonGroup
+        <VisualButtonGroup
           label="Hjørne-dot"
           options={CORNER_DOT_TYPES}
           value={style.corner_dot_type || "dot"}
           onSelect={(v) => update({ corner_dot_type: v })}
+          showPreview={true}
         />
 
-        <ButtonGroup
+        <VisualButtonGroup
           label="Hjørne-ramme"
           options={CORNER_SQUARE_TYPES}
           value={style.corner_square_type || "extra-rounded"}
           onSelect={(v) => update({ corner_square_type: v })}
+          showPreview={true}
         />
       </Section>
 
-      {/* Farver */}
+      {/* Farver — open by default, quick to scan */}
       <Section title="Farver" defaultOpen={true}>
-        {/* Color mode toggle */}
         <ButtonGroup
           label="Farvetilstand"
           options={[
@@ -330,7 +409,6 @@ export default function QRStylePicker({ style, onChange, logoData, onLogoChange 
           </div>
         )}
 
-        {/* Background color is always available */}
         {style.color_mode === "gradient" && (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Baggrund</label>

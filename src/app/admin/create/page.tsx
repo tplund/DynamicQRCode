@@ -77,6 +77,7 @@ export default function CreateQR() {
                 required
               />
             </div>
+            <p className="mt-1 text-xs text-amber-600">Slug kan ikke ændres efter oprettelse</p>
           </div>
 
           <div>

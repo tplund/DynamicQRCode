@@ -34,6 +34,7 @@ export default function EditQR() {
   const [logoData, setLogoData] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -61,7 +62,7 @@ export default function EditQR() {
 
     setSaving(false);
     setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    setTimeout(() => setSaved(false), 4000);
   }
 
   async function handleDelete() {
@@ -94,7 +95,18 @@ export default function EditQR() {
         <div>
           <a href="/admin" className="text-sm text-gray-500 hover:text-gray-700">← Tilbage</a>
           <h1 className="text-2xl font-bold text-gray-900 mt-1">{qrCode.label}</h1>
-          <p className="text-sm text-gray-500 font-mono mt-1">{qrUrl}</p>
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(qrUrl);
+              setCopied(true);
+              setTimeout(() => setCopied(false), 2000);
+            }}
+            className="flex items-center gap-1.5 text-sm text-gray-500 font-mono mt-1 hover:text-gray-700 transition-colors cursor-pointer"
+            title="Kopiér URL"
+          >
+            {qrUrl}
+            <span className="text-xs">{copied ? "✓ Kopieret!" : "📋"}</span>
+          </button>
         </div>
       </div>
 
@@ -133,7 +145,9 @@ export default function EditQR() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="flex-1 rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-800 transition-colors disabled:opacity-50 cursor-pointer"
+              className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-medium text-white transition-colors disabled:opacity-50 cursor-pointer ${
+                saved ? "bg-green-600 hover:bg-green-600" : "bg-gray-900 hover:bg-gray-800"
+              }`}
             >
               {saving ? "Gemmer..." : saved ? "Gemt!" : "Gem ændringer"}
             </button>
