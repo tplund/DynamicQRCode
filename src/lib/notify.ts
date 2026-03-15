@@ -1,9 +1,33 @@
-const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || "thomas@activatelms.com";
+const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || "tlund@elearningspecialist.com";
+const FROM_EMAIL = process.env.FROM_EMAIL || "tlund@elearningspecialist.com";
 
-function getResend() {
-  // Lazy init to avoid build-time errors
-  const { Resend } = require("resend");
-  return new Resend(process.env.RESEND_API_KEY);
+async function sendMail(subject: string, htmlContent: string) {
+  const apiKey = process.env.MAILJET_API_KEY;
+  const apiSecret = process.env.MAILJET_API_SECRET;
+
+  if (!apiKey || !apiSecret) {
+    console.warn("[notify] MAILJET credentials not set — skipping email");
+    return;
+  }
+
+  try {
+    const Mailjet = require("node-mailjet");
+    const mailjet = Mailjet.apiConnect(apiKey, apiSecret);
+
+    await mailjet.post("send", { version: "v3.1" }).request({
+      Messages: [
+        {
+          From: { Email: FROM_EMAIL, Name: "DynamicQR" },
+          To: [{ Email: NOTIFY_EMAIL, Name: "Thomas" }],
+          Subject: subject,
+          HTMLPart: htmlContent,
+        },
+      ],
+    });
+    console.log(`[notify] Email sent: ${subject}`);
+  } catch (err) {
+    console.error("[notify] Failed to send email:", err);
+  }
 }
 
 export async function notifyBrokenRedirect({
@@ -19,32 +43,22 @@ export async function notifyBrokenRedirect({
   referer: string | null;
   url: string;
 }) {
-  if (!process.env.RESEND_API_KEY) {
-    console.warn("[notify] RESEND_API_KEY not set — skipping email");
-    return;
-  }
-
-  try {
-    await getResend().emails.send({
-      from: "DynamicQR <onboarding@resend.dev>",
-      to: NOTIFY_EMAIL,
-      subject: `⚠️ Broken QR redirect: /${slug}`,
-      html: `
-        <h2>En bruger ramte en ukendt QR-kode</h2>
-        <table style="border-collapse:collapse;font-family:sans-serif;">
-          <tr><td style="padding:4px 12px;font-weight:bold;">Slug</td><td style="padding:4px 12px;">/${slug}</td></tr>
-          <tr><td style="padding:4px 12px;font-weight:bold;">URL</td><td style="padding:4px 12px;">${url}</td></tr>
-          <tr><td style="padding:4px 12px;font-weight:bold;">Land</td><td style="padding:4px 12px;">${country || "Ukendt"}</td></tr>
-          <tr><td style="padding:4px 12px;font-weight:bold;">Referer</td><td style="padding:4px 12px;">${referer || "Ingen"}</td></tr>
-          <tr><td style="padding:4px 12px;font-weight:bold;">User Agent</td><td style="padding:4px 12px;">${userAgent || "Ukendt"}</td></tr>
-        </table>
-        <p style="margin-top:16px;color:#666;">Tjek om der mangler en QR-kode i <a href="https://qr.activatelms.com/admin">admin-panelet</a>.</p>
-      `,
-    });
-    console.log(`[notify] Sent broken redirect alert for /${slug}`);
-  } catch (err) {
-    console.error("[notify] Failed to send email:", err);
-  }
+  await sendMail(
+    `⚠️ Ukendt QR-kode: /${slug}`,
+    `
+    <div style="font-family:sans-serif;max-width:600px;">
+      <h2 style="color:#c0392b;">En bruger ramte en ukendt QR-kode</h2>
+      <table style="border-collapse:collapse;width:100%;">
+        <tr style="background:#f8f9fa;"><td style="padding:8px 12px;font-weight:bold;border:1px solid #dee2e6;">Slug</td><td style="padding:8px 12px;border:1px solid #dee2e6;">/${slug}</td></tr>
+        <tr><td style="padding:8px 12px;font-weight:bold;border:1px solid #dee2e6;">Fuld URL</td><td style="padding:8px 12px;border:1px solid #dee2e6;">${url}</td></tr>
+        <tr style="background:#f8f9fa;"><td style="padding:8px 12px;font-weight:bold;border:1px solid #dee2e6;">Land</td><td style="padding:8px 12px;border:1px solid #dee2e6;">${country || "Ukendt"}</td></tr>
+        <tr><td style="padding:8px 12px;font-weight:bold;border:1px solid #dee2e6;">Referer</td><td style="padding:8px 12px;border:1px solid #dee2e6;">${referer || "Ingen"}</td></tr>
+        <tr style="background:#f8f9fa;"><td style="padding:8px 12px;font-weight:bold;border:1px solid #dee2e6;">Browser</td><td style="padding:8px 12px;border:1px solid #dee2e6;font-size:12px;">${userAgent || "Ukendt"}</td></tr>
+      </table>
+      <p style="margin-top:16px;color:#666;">💡 Opret evt. QR-koden i <a href="https://qr.activatelms.com/admin">admin-panelet</a>.</p>
+    </div>
+    `
+  );
 }
 
 export async function notifyDestination404({
@@ -56,28 +70,18 @@ export async function notifyDestination404({
   destinationUrl: string;
   statusCode: number;
 }) {
-  if (!process.env.RESEND_API_KEY) {
-    console.warn("[notify] RESEND_API_KEY not set — skipping email");
-    return;
-  }
-
-  try {
-    await getResend().emails.send({
-      from: "DynamicQR <onboarding@resend.dev>",
-      to: NOTIFY_EMAIL,
-      subject: `⚠️ Destination 404: /${slug} → ${destinationUrl}`,
-      html: `
-        <h2>En QR-kode peger på en død destination</h2>
-        <table style="border-collapse:collapse;font-family:sans-serif;">
-          <tr><td style="padding:4px 12px;font-weight:bold;">Slug</td><td style="padding:4px 12px;">/${slug}</td></tr>
-          <tr><td style="padding:4px 12px;font-weight:bold;">Destination</td><td style="padding:4px 12px;">${destinationUrl}</td></tr>
-          <tr><td style="padding:4px 12px;font-weight:bold;">Status kode</td><td style="padding:4px 12px;">${statusCode}</td></tr>
-        </table>
-        <p style="margin-top:16px;color:#666;">Ret destination-URL'en i <a href="https://qr.activatelms.com/admin">admin-panelet</a>.</p>
-      `,
-    });
-    console.log(`[notify] Sent destination 404 alert for /${slug}`);
-  } catch (err) {
-    console.error("[notify] Failed to send email:", err);
-  }
+  await sendMail(
+    `⚠️ Død destination: /${slug}`,
+    `
+    <div style="font-family:sans-serif;max-width:600px;">
+      <h2 style="color:#e67e22;">En QR-kode peger på en utilgængelig side</h2>
+      <table style="border-collapse:collapse;width:100%;">
+        <tr style="background:#f8f9fa;"><td style="padding:8px 12px;font-weight:bold;border:1px solid #dee2e6;">QR Slug</td><td style="padding:8px 12px;border:1px solid #dee2e6;">/${slug}</td></tr>
+        <tr><td style="padding:8px 12px;font-weight:bold;border:1px solid #dee2e6;">Destination</td><td style="padding:8px 12px;border:1px solid #dee2e6;">${destinationUrl}</td></tr>
+        <tr style="background:#f8f9fa;"><td style="padding:8px 12px;font-weight:bold;border:1px solid #dee2e6;">HTTP Status</td><td style="padding:8px 12px;border:1px solid #dee2e6;color:#c0392b;font-weight:bold;">${statusCode === 0 ? "Utilgængelig" : statusCode}</td></tr>
+      </table>
+      <p style="margin-top:16px;color:#666;">🔧 Ret destination-URL i <a href="https://qr.activatelms.com/admin">admin-panelet</a>.</p>
+    </div>
+    `
+  );
 }
