@@ -1,8 +1,8 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-const VALID_EMAIL = "tlund@elearningspecialist.com";
-const VALID_PASSWORD = "QRActivate!";
+const VALID_EMAIL = process.env.AUTH_EMAIL!;
+const VALID_PASSWORD = process.env.AUTH_PASSWORD!;
 
 export const authOptions: NextAuthOptions = {
   providers: [
