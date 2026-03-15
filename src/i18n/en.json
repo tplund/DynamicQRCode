@@ -1,0 +1,97 @@
+{
+  "site": {
+    "title": "GetDynamicQRCode — Dynamic QR Codes That Never Break",
+    "description": "Create branded, dynamic QR codes you can update anytime. Track every scan with real-time analytics. Free to start."
+  },
+  "nav": {
+    "features": "Features",
+    "pricing": "Pricing",
+    "blog": "Blog",
+    "login": "Log in",
+    "getStarted": "Get Started Free"
+  },
+  "hero": {
+    "title": "QR codes that grow with your business",
+    "subtitle": "Create branded QR codes you can update anytime — without reprinting. Track every scan with real-time analytics.",
+    "cta": "Create Your First QR Code — Free",
+    "ctaSecondary": "See Pricing"
+  },
+  "howItWorks": {
+    "title": "How it works",
+    "step1Title": "Create",
+    "step1Desc": "Design a branded QR code with your colors, logo, and style in seconds.",
+    "step2Title": "Place",
+    "step2Desc": "Print it on packaging, signage, business cards — anywhere.",
+    "step3Title": "Update",
+    "step3Desc": "Change the destination URL anytime. No reprinting. No broken links."
+  },
+  "features": {
+    "title": "Everything you need",
+    "analytics": "Real-time Analytics",
+    "analyticsDesc": "See who scans your codes — country, device, time. Know what works.",
+    "branding": "Custom Branding",
+    "brandingDesc": "Your colors, your logo, your dot style. QR codes that match your brand.",
+    "dynamic": "Instant Updates",
+    "dynamicDesc": "Change where your QR code points — without reprinting a single thing.",
+    "alerts": "Email Alerts",
+    "alertsDesc": "Get notified if a destination goes down. Never have a broken QR code.",
+    "export": "Multi-format Export",
+    "exportDesc": "Download as PNG, SVG, JPEG, or WebP. Perfect for any use case.",
+    "api": "API Access",
+    "apiDesc": "Generate and manage QR codes programmatically. Coming soon."
+  },
+  "useCases": {
+    "title": "Built for every industry",
+    "construction": "Construction & Infrastructure",
+    "constructionDesc": "Safety access codes, equipment manuals, site documentation. Update destinations as projects evolve.",
+    "marketing": "Marketing Campaigns",
+    "marketingDesc": "Track campaign performance across print, packaging, and events. A/B test destinations.",
+    "packaging": "Product Packaging",
+    "packagingDesc": "Link to manuals, warranty registration, or promotions. Update after production."
+  },
+  "pricing": {
+    "title": "Simple, transparent pricing",
+    "subtitle": "Start free. Upgrade when you need more.",
+    "free": "Free",
+    "freePrice": "0 kr",
+    "freePeriod": "forever",
+    "freeFeatures": ["3 QR codes", "1,000 scans/month", "Basic styling", "Scan count"],
+    "pro": "Pro",
+    "proPrice": "49 kr",
+    "proPeriod": "/month",
+    "proFeatures": ["25 QR codes", "50,000 scans/month", "Custom branding & logo", "Full analytics", "Email alerts", "All export formats"],
+    "proCta": "Start Pro",
+    "business": "Business",
+    "businessPrice": "149 kr",
+    "businessPeriod": "/month",
+    "businessFeatures": ["Unlimited QR codes", "Unlimited scans", "API access", "Priority support", "Bulk generation", "Custom domain"],
+    "businessCta": "Start Business",
+    "popular": "Most popular"
+  },
+  "faq": {
+    "title": "Frequently asked questions",
+    "q1": "What is a dynamic QR code?",
+    "a1": "A dynamic QR code points to a short URL that you control. You can change where it redirects at any time — without reprinting the QR code. Static QR codes, by contrast, encode the destination directly and can never be changed.",
+    "q2": "Can I change the link after printing?",
+    "a2": "Yes! That's the whole point. Change the destination URL anytime from your dashboard. The printed QR code stays the same.",
+    "q3": "What analytics do I get?",
+    "a3": "You can see total scans, scans per day, country breakdown, and device information. Pro and Business plans include full analytics dashboards.",
+    "q4": "Is it really free?",
+    "a4": "Yes. The free plan includes 3 dynamic QR codes with up to 1,000 scans per month. No credit card required.",
+    "q5": "What happens if my destination URL goes down?",
+    "a5": "We monitor your destinations and send you an email alert if we detect a broken link. You'll never have a QR code pointing to a 404 page without knowing about it.",
+    "q6": "Can I use my own logo?",
+    "a6": "Yes! Upload your logo and it will be embedded in the center of your QR code. We automatically adjust error correction to ensure the code still scans perfectly."
+  },
+  "finalCta": {
+    "title": "Ready to create your first dynamic QR code?",
+    "subtitle": "Join thousands of businesses using dynamic QR codes. Free to start, no credit card required.",
+    "cta": "Get Started Free"
+  },
+  "footer": {
+    "product": "Product",
+    "resources": "Resources",
+    "tagline": "Dynamic QR codes that never break.",
+    "copyright": "GetDynamicQRCode. All rights reserved."
+  }
+}

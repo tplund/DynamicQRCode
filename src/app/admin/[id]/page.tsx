@@ -76,7 +76,7 @@ export default function EditQR() {
   if (!qrCode) return <div className="text-red-600">QR-kode ikke fundet</div>;
 
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
-  const qrUrl = `${baseUrl}/${qrCode.slug}`;
+  const qrUrl = `${baseUrl}/go/${qrCode.slug}`;
 
   const scans = qrCode.scans || [];
   const totalScans = scans.length;

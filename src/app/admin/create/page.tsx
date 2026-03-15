@@ -17,7 +17,7 @@ export default function CreateQR() {
   const [error, setError] = useState("");
 
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
-  const previewUrl = `${baseUrl}/${slug || "preview"}`;
+  const previewUrl = `${baseUrl}/go/${slug || "preview"}`;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -67,7 +67,7 @@ export default function CreateQR() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Slug</label>
             <div className="flex items-center gap-1">
-              <span className="text-sm text-gray-400">{baseUrl}/</span>
+              <span className="text-sm text-gray-400">{baseUrl}/go/</span>
               <input
                 type="text"
                 value={slug}

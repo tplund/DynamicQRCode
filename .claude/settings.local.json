@@ -19,7 +19,23 @@
       "Bash(vercel --yes --name dynamic-qr)",
       "Bash(vercel env:*)",
       "Bash(npx next:*)",
-      "Bash(vercel --prod)"
+      "Bash(vercel --prod)",
+      "Bash(printf '%s' '$2b$12$.cayFqCBn2cumwGLuL9FL.xNq8yCP4xvZyr2zKqQ4U30Hn.y1dybS')",
+      "Bash(vercel logs:*)",
+      "Bash(vercel inspect:*)",
+      "Bash(git status:*)",
+      "Bash(vercel domains:*)",
+      "Bash(npx tsc:*)",
+      "Bash(printf '%s' '1a6dcd553c026b5165e8f811d03abfbc')",
+      "Bash(printf '%s' 'a46b5147692b769a3df91d27ee74525f')",
+      "Bash(printf '%s' 'tlund@elearningspecialist.com')",
+      "Bash(vercel certs:*)",
+      "Bash(printf '%s' 'https://qr.activatelms.com')",
+      "Bash(node -e \"require\\(''''docx''''\\)\")",
+      "Bash(node generate-doc.js)",
+      "Bash(python \"C:\\\\Users\\\\tplun\\\\AppData\\\\Roaming\\\\Claude\\\\local-agent-mode-sessions\\\\skills-plugin\\\\96c7a20a-4963-4edf-abac-ab16bc4c2973\\\\065eb1f7-74fa-434a-b2b7-c65762f9dfc4\\\\skills\\\\docx\\\\scripts\\\\office\\\\validate.py\" \"C:\\\\_proj\\\\DynamicQRCode\\\\DynamicQR_Forretningsanalyse.docx\")",
+      "Bash(printf '%s' 'QRActivate!')",
+      "Bash(find app:*)"
     ]
   }
 }

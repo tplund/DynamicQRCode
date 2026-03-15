@@ -1,0 +1,97 @@
+{
+  "site": {
+    "title": "GetDynamicQRCode — Dynamiske QR-koder der aldrig går i stykker",
+    "description": "Opret branded, dynamiske QR-koder du kan opdatere når som helst. Spor hvert scan med real-time analytics. Gratis at starte."
+  },
+  "nav": {
+    "features": "Features",
+    "pricing": "Priser",
+    "blog": "Blog",
+    "login": "Log ind",
+    "getStarted": "Kom i gang gratis"
+  },
+  "hero": {
+    "title": "QR-koder der vokser med din virksomhed",
+    "subtitle": "Opret branded QR-koder du kan opdatere når som helst — uden at gentrykke. Spor hvert scan med real-time analytics.",
+    "cta": "Opret din første QR-kode — Gratis",
+    "ctaSecondary": "Se priser"
+  },
+  "howItWorks": {
+    "title": "Sådan virker det",
+    "step1Title": "Opret",
+    "step1Desc": "Design en branded QR-kode med dine farver, logo og stil på få sekunder.",
+    "step2Title": "Placer",
+    "step2Desc": "Tryk den på emballage, skilte, visitkort — hvor som helst.",
+    "step3Title": "Opdater",
+    "step3Desc": "Skift destinations-URL når som helst. Ingen genoptryk. Ingen døde links."
+  },
+  "features": {
+    "title": "Alt hvad du har brug for",
+    "analytics": "Real-time Analytics",
+    "analyticsDesc": "Se hvem der scanner dine koder — land, enhed, tidspunkt. Vid hvad der virker.",
+    "branding": "Custom Branding",
+    "brandingDesc": "Dine farver, dit logo, din dot-stil. QR-koder der matcher dit brand.",
+    "dynamic": "Øjeblikkelige opdateringer",
+    "dynamicDesc": "Skift hvor din QR-kode peger hen — uden at gentrykke noget.",
+    "alerts": "Email-varsler",
+    "alertsDesc": "Få besked hvis en destination går ned. Hav aldrig en broken QR-kode.",
+    "export": "Multi-format eksport",
+    "exportDesc": "Download som PNG, SVG, JPEG eller WebP. Perfekt til enhver situation.",
+    "api": "API-adgang",
+    "apiDesc": "Generer og administrer QR-koder programmatisk. Kommer snart."
+  },
+  "useCases": {
+    "title": "Bygget til alle brancher",
+    "construction": "Byggeri & Infrastruktur",
+    "constructionDesc": "Sikkerhedsadgang, udstyrs-manualer, dokumentation. Opdater destinationer efterhånden som projekter udvikler sig.",
+    "marketing": "Marketingkampagner",
+    "marketingDesc": "Spor kampagneresultater på tværs af print, emballage og events. A/B-test destinationer.",
+    "packaging": "Produktemballage",
+    "packagingDesc": "Link til manualer, garanti-registrering eller kampagner. Opdater efter produktion."
+  },
+  "pricing": {
+    "title": "Simpel, gennemsigtig prissætning",
+    "subtitle": "Start gratis. Opgrader når du har brug for mere.",
+    "free": "Gratis",
+    "freePrice": "0 kr",
+    "freePeriod": "for altid",
+    "freeFeatures": ["3 QR-koder", "1.000 scans/måned", "Basis styling", "Scan-tal"],
+    "pro": "Pro",
+    "proPrice": "49 kr",
+    "proPeriod": "/måned",
+    "proFeatures": ["25 QR-koder", "50.000 scans/måned", "Custom branding & logo", "Fuld analytics", "Email-varsler", "Alle eksportformater"],
+    "proCta": "Start Pro",
+    "business": "Business",
+    "businessPrice": "149 kr",
+    "businessPeriod": "/måned",
+    "businessFeatures": ["Ubegrænsede QR-koder", "Ubegrænsede scans", "API-adgang", "Prioriteret support", "Masse-generering", "Custom domæne"],
+    "businessCta": "Start Business",
+    "popular": "Mest populær"
+  },
+  "faq": {
+    "title": "Ofte stillede spørgsmål",
+    "q1": "Hvad er en dynamisk QR-kode?",
+    "a1": "En dynamisk QR-kode peger på en kort URL som du kontrollerer. Du kan ændre hvor den omdirigerer til når som helst — uden at gentrykke QR-koden. Statiske QR-koder koder destinationen direkte ind og kan aldrig ændres.",
+    "q2": "Kan jeg ændre linket efter trykning?",
+    "a2": "Ja! Det er hele pointen. Skift destinations-URL når som helst fra dit dashboard. Den trykte QR-kode forbliver den samme.",
+    "q3": "Hvilken analytics får jeg?",
+    "a3": "Du kan se totale scans, scans per dag, landefordeling og enhedsinformation. Pro og Business inkluderer fulde analytics-dashboards.",
+    "q4": "Er det virkelig gratis?",
+    "a4": "Ja. Gratisplanen inkluderer 3 dynamiske QR-koder med op til 1.000 scans per måned. Intet kreditkort påkrævet.",
+    "q5": "Hvad sker der hvis min destinations-URL går ned?",
+    "a5": "Vi overvåger dine destinationer og sender dig en email-varsel hvis vi opdager et broken link. Du vil aldrig have en QR-kode der peger på en 404-side uden at vide det.",
+    "q6": "Kan jeg bruge mit eget logo?",
+    "a6": "Ja! Upload dit logo og det bliver indlejret i midten af din QR-kode. Vi justerer automatisk fejlkorrektion så koden stadig scanner perfekt."
+  },
+  "finalCta": {
+    "title": "Klar til at oprette din første dynamiske QR-kode?",
+    "subtitle": "Slut dig til tusindvis af virksomheder der bruger dynamiske QR-koder. Gratis at starte, intet kreditkort påkrævet.",
+    "cta": "Kom i gang gratis"
+  },
+  "footer": {
+    "product": "Produkt",
+    "resources": "Ressourcer",
+    "tagline": "Dynamiske QR-koder der aldrig går i stykker.",
+    "copyright": "GetDynamicQRCode. Alle rettigheder forbeholdes."
+  }
+}

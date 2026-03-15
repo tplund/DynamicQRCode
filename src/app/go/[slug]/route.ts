@@ -10,10 +10,6 @@ export async function GET(
 ) {
   const { slug } = await params;
 
-  if (slug === "admin" || slug === "favicon.ico" || slug.startsWith("_next")) {
-    return NextResponse.next();
-  }
-
   const [qrCode] = await db
     .select({
       id: qrCodes.id,
@@ -25,7 +21,6 @@ export async function GET(
     .limit(1);
 
   if (!qrCode) {
-    // Fire-and-forget: notify about unknown slug
     notifyBrokenRedirect({
       slug,
       userAgent: request.headers.get("user-agent"),
@@ -61,7 +56,6 @@ export async function GET(
       }
     })
     .catch(() => {
-      // Destination unreachable
       notifyDestination404({
         slug: qrCode.slug,
         destinationUrl: qrCode.destinationUrl,
