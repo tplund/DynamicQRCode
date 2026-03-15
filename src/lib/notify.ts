@@ -1,8 +1,10 @@
-import { Resend } from "resend";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || "thomas@activatelms.com";
+
+function getResend() {
+  // Lazy init to avoid build-time errors
+  const { Resend } = require("resend");
+  return new Resend(process.env.RESEND_API_KEY);
+}
 
 export async function notifyBrokenRedirect({
   slug,
@@ -23,7 +25,7 @@ export async function notifyBrokenRedirect({
   }
 
   try {
-    await resend.emails.send({
+    await getResend().emails.send({
       from: "DynamicQR <onboarding@resend.dev>",
       to: NOTIFY_EMAIL,
       subject: `⚠️ Broken QR redirect: /${slug}`,
@@ -60,7 +62,7 @@ export async function notifyDestination404({
   }
 
   try {
-    await resend.emails.send({
+    await getResend().emails.send({
       from: "DynamicQR <onboarding@resend.dev>",
       to: NOTIFY_EMAIL,
       subject: `⚠️ Destination 404: /${slug} → ${destinationUrl}`,
