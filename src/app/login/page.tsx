@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -16,12 +17,13 @@ export default function LoginPage() {
     setLoading(true);
 
     const result = await signIn("credentials", {
+      email,
       password,
       redirect: false,
     });
 
     if (result?.error) {
-      setError("Forkert adgangskode");
+      setError("Forkert email eller adgangskode");
       setLoading(false);
     } else {
       router.push("/admin");
@@ -31,8 +33,20 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
       <div className="w-full max-w-sm rounded-xl bg-white p-8 shadow-lg">
-        <h1 className="mb-6 text-xl font-bold text-gray-900">Admin Login</h1>
+        <h1 className="mb-6 text-xl font-bold text-gray-900">DynamicQR Login</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+              placeholder="din@email.com"
+              required
+              autoFocus
+            />
+          </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Adgangskode</label>
             <input
@@ -41,7 +55,6 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
               required
-              autoFocus
             />
           </div>
           {error && <p className="text-sm text-red-600">{error}</p>}

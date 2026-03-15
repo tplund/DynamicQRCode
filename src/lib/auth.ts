@@ -1,24 +1,25 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import bcrypt from "bcryptjs";
+
+const VALID_EMAIL = "tlund@elearningspecialist.com";
+const VALID_PASSWORD = "QRActivate!";
 
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
-      name: "Password",
+      name: "Credentials",
       credentials: {
+        email: { label: "Email", type: "email" },
         password: { label: "Adgangskode", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.password) return null;
+        if (!credentials?.email || !credentials?.password) return null;
 
-        const isValid = await bcrypt.compare(
-          credentials.password,
-          process.env.AUTH_PASSWORD_HASH!
-        );
-
-        if (isValid) {
-          return { id: "1", name: "Admin" };
+        if (
+          credentials.email === VALID_EMAIL &&
+          credentials.password === VALID_PASSWORD
+        ) {
+          return { id: "1", name: "Thomas Lund", email: VALID_EMAIL };
         }
         return null;
       },
