@@ -3,26 +3,40 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/db";
 import { qrCodes, scans } from "@/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
+
+async function checkOwnership(id: string, userId: string, role: string) {
+  const [qrCode] = await db
+    .select({ userId: qrCodes.userId })
+    .from(qrCodes)
+    .where(eq(qrCodes.id, id))
+    .limit(1);
+
+  if (!qrCode) return { found: false, allowed: false };
+  if (role === "super_admin") return { found: true, allowed: true };
+  return { found: true, allowed: qrCode.userId === userId };
+}
 
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const { id } = await params;
+  const { found, allowed } = await checkOwnership(id, session.user.id, session.user.role);
+
+  if (!found) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (!allowed) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const [qrCode] = await db
     .select()
     .from(qrCodes)
     .where(eq(qrCodes.id, id))
     .limit(1);
-
-  if (!qrCode) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
-  }
 
   const recentScans = await db
     .select()
@@ -39,9 +53,16 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const { id } = await params;
+  const { found, allowed } = await checkOwnership(id, session.user.id, session.user.role);
+
+  if (!found) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (!allowed) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
   const body = await request.json();
 
   const [updated] = await db
@@ -68,9 +89,15 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const { id } = await params;
+  const { found, allowed } = await checkOwnership(id, session.user.id, session.user.role);
+
+  if (!found) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (!allowed) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   await db.delete(qrCodes).where(eq(qrCodes.id, id));
 

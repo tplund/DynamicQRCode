@@ -1,6 +1,21 @@
 import { pgTable, uuid, text, timestamp, jsonb } from "drizzle-orm/pg-core";
 import type { QRStyleConfig } from "@/lib/types";
 
+export const users = pgTable("users", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  email: text("email").notNull().unique(),
+  name: text("name"),
+  passwordHash: text("password_hash").notNull(),
+  role: text("role").notNull().default("user"), // 'user' | 'super_admin'
+  plan: text("plan").notNull().default("free"), // 'free' | 'pro' | 'business'
+  stripeCustomerId: text("stripe_customer_id").unique(),
+  stripeSubscriptionId: text("stripe_subscription_id"),
+  stripePriceId: text("stripe_price_id"),
+  stripeCurrentPeriodEnd: timestamp("stripe_current_period_end"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 export const qrCodes = pgTable("qr_codes", {
   id: uuid("id").defaultRandom().primaryKey(),
   slug: text("slug").notNull().unique(),
@@ -13,6 +28,7 @@ export const qrCodes = pgTable("qr_codes", {
     size: 300,
   }),
   logoData: text("logo_data"),
+  userId: uuid("user_id").references(() => users.id, { onDelete: "set null" }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

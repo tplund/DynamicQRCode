@@ -3,11 +3,16 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/db";
 import { qrCodes } from "@/db/schema";
-import { desc, sql } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
+import { canCreateQrCode } from "@/lib/plan-limits";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const isSuperAdmin = session.user.role === "super_admin";
 
   const codes = await db
     .select({
@@ -21,6 +26,7 @@ export async function GET() {
       scanCount: sql<number>`(select count(*) from scans where scans.qr_code_id = ${qrCodes.id})`,
     })
     .from(qrCodes)
+    .where(isSuperAdmin ? undefined : eq(qrCodes.userId, session.user.id))
     .orderBy(desc(qrCodes.createdAt));
 
   return NextResponse.json(codes);
@@ -28,7 +34,23 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // Check plan limits
+  const limits = await canCreateQrCode(session.user.id);
+  if (!limits.allowed) {
+    return NextResponse.json(
+      {
+        error: limits.reason || "QR-kode limit nået",
+        current: limits.current,
+        max: limits.max,
+        needsUpgrade: true,
+      },
+      { status: 403 }
+    );
+  }
 
   const body = await request.json();
   const { slug, destinationUrl, label, styleConfig, logoData } = body;
@@ -41,6 +63,7 @@ export async function POST(request: NextRequest) {
         destinationUrl,
         label,
         styleConfig,
+        userId: session.user.id,
         ...(logoData !== undefined && { logoData }),
       })
       .returning();

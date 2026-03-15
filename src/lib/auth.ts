@@ -1,8 +1,9 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-
-const VALID_EMAIL = process.env.AUTH_EMAIL!;
-const VALID_PASSWORD = process.env.AUTH_PASSWORD!;
+import { db } from "@/db";
+import { users } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import bcrypt from "bcryptjs";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -15,16 +16,48 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        if (
-          credentials.email === VALID_EMAIL &&
-          credentials.password === VALID_PASSWORD
-        ) {
-          return { id: "1", name: "Thomas Lund", email: VALID_EMAIL };
-        }
-        return null;
+        const [user] = await db
+          .select()
+          .from(users)
+          .where(eq(users.email, credentials.email.toLowerCase()))
+          .limit(1);
+
+        if (!user) return null;
+
+        const isValid = await bcrypt.compare(
+          credentials.password,
+          user.passwordHash
+        );
+        if (!isValid) return null;
+
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name || user.email,
+          role: user.role,
+          plan: user.plan,
+        };
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.role = (user as any).role;
+        token.plan = (user as any).plan;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id as string;
+        session.user.role = token.role as string;
+        session.user.plan = token.plan as string;
+      }
+      return session;
+    },
+  },
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
