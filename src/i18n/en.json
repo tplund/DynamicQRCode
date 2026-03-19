@@ -11,10 +11,14 @@
     "getStarted": "Get Started Free"
   },
   "hero": {
-    "title": "QR codes that grow with your business",
-    "subtitle": "Create branded QR codes you can update anytime — without reprinting. Track every scan with real-time analytics.",
+    "title": "Create a QR code. Change the link anytime.",
+    "subtitle": "Brand it with your colors and logo. Track every scan. Update the destination — without reprinting.",
     "cta": "Create Your First QR Code — Free",
-    "ctaSecondary": "See Pricing"
+    "ctaSecondary": "See Pricing",
+    "generatorPlaceholder": "Enter a URL...",
+    "generatorDownload": "Download QR Code",
+    "generatorUpsell": "Want to change the link later?",
+    "generatorUpsellCta": "Create a dynamic QR code — free"
   },
   "howItWorks": {
     "title": "How it works",
@@ -26,7 +30,7 @@
     "step3Desc": "Change the destination URL anytime. No reprinting. No broken links."
   },
   "features": {
-    "title": "Everything you need",
+    "title": "Track, brand, and update every QR code",
     "analytics": "Real-time Analytics",
     "analyticsDesc": "See who scans your codes — country, device, time. Know what works.",
     "branding": "Custom Branding",
@@ -36,9 +40,7 @@
     "alerts": "Email Alerts",
     "alertsDesc": "Get notified if a destination goes down. Never have a broken QR code.",
     "export": "Multi-format Export",
-    "exportDesc": "Download as PNG, SVG, JPEG, or WebP. Perfect for any use case.",
-    "api": "API Access",
-    "apiDesc": "Generate and manage QR codes programmatically. Coming soon."
+    "exportDesc": "Download as PNG, SVG, JPEG, or WebP. Perfect for any use case."
   },
   "useCases": {
     "title": "Built for every industry",
@@ -55,6 +57,7 @@
     "free": "Free",
     "freePrice": "0 kr",
     "freePeriod": "forever",
+    "freeCta": "Start free",
     "freeFeatures": ["3 QR codes", "1,000 scans/month", "Basic styling", "Scan count"],
     "pro": "Pro",
     "proPrice": "49 kr",
@@ -85,13 +88,22 @@
   },
   "finalCta": {
     "title": "Ready to create your first dynamic QR code?",
-    "subtitle": "Join thousands of businesses using dynamic QR codes. Free to start, no credit card required.",
+    "subtitle": "Create your first QR code in under a minute. Free, no credit card required.",
     "cta": "Get Started Free"
+  },
+  "socialProof": {
+    "qrCodes": "QR codes created",
+    "scans": "Scans tracked",
+    "countries": "Countries reached"
   },
   "footer": {
     "product": "Product",
     "resources": "Resources",
+    "legal": "Legal",
     "tagline": "Dynamic QR codes that never break.",
-    "copyright": "GetDynamicQRCode. All rights reserved."
+    "copyright": "GetDynamicQRCode. All rights reserved.",
+    "privacy": "Privacy Policy",
+    "contact": "Contact",
+    "hostedInEu": "Hosted in the EU"
   }
 }

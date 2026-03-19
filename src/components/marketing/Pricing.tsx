@@ -7,6 +7,7 @@ interface PricingProps {
     free: string;
     freePrice: string;
     freePeriod: string;
+    freeCta: string;
     freeFeatures: string[];
     pro: string;
     proPrice: string;
@@ -29,7 +30,7 @@ export default function Pricing({ messages }: PricingProps) {
       price: messages.freePrice,
       period: messages.freePeriod,
       features: messages.freeFeatures,
-      cta: messages.free,
+      cta: messages.freeCta,
       highlighted: false,
       href: "/login",
     },

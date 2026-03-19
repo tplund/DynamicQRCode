@@ -11,8 +11,6 @@ interface FeaturesProps {
     alertsDesc: string;
     export: string;
     exportDesc: string;
-    api: string;
-    apiDesc: string;
   };
 }
 
@@ -41,11 +39,6 @@ const featureIcons = [
   <svg key="export" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
     <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
   </svg>,
-  // API
-  <svg key="api" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <polyline points="16 18 22 12 16 6" />
-    <polyline points="8 6 2 12 8 18" />
-  </svg>,
 ];
 
 export default function Features({ messages }: FeaturesProps) {
@@ -55,7 +48,6 @@ export default function Features({ messages }: FeaturesProps) {
     { title: messages.dynamic, desc: messages.dynamicDesc },
     { title: messages.alerts, desc: messages.alertsDesc },
     { title: messages.export, desc: messages.exportDesc },
-    { title: messages.api, desc: messages.apiDesc },
   ];
 
   return (

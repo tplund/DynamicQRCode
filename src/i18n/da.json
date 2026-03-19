@@ -11,10 +11,14 @@
     "getStarted": "Kom i gang gratis"
   },
   "hero": {
-    "title": "QR-koder der vokser med din virksomhed",
-    "subtitle": "Opret branded QR-koder du kan opdatere når som helst — uden at gentrykke. Spor hvert scan med real-time analytics.",
+    "title": "Opret en QR-kode. Skift linket når som helst.",
+    "subtitle": "Tilpas med dine farver og logo. Spor hvert scan. Opdater destinationen — uden genoptryk.",
     "cta": "Opret din første QR-kode — Gratis",
-    "ctaSecondary": "Se priser"
+    "ctaSecondary": "Se priser",
+    "generatorPlaceholder": "Indtast en URL...",
+    "generatorDownload": "Download QR-kode",
+    "generatorUpsell": "Vil du ændre linket senere?",
+    "generatorUpsellCta": "Opret en dynamisk QR-kode — gratis"
   },
   "howItWorks": {
     "title": "Sådan virker det",
@@ -26,7 +30,7 @@
     "step3Desc": "Skift destinations-URL når som helst. Ingen genoptryk. Ingen døde links."
   },
   "features": {
-    "title": "Alt hvad du har brug for",
+    "title": "Spor, brand og opdater hver QR-kode",
     "analytics": "Real-time Analytics",
     "analyticsDesc": "Se hvem der scanner dine koder — land, enhed, tidspunkt. Vid hvad der virker.",
     "branding": "Custom Branding",
@@ -34,11 +38,9 @@
     "dynamic": "Øjeblikkelige opdateringer",
     "dynamicDesc": "Skift hvor din QR-kode peger hen — uden at gentrykke noget.",
     "alerts": "Email-varsler",
-    "alertsDesc": "Få besked hvis en destination går ned. Hav aldrig en broken QR-kode.",
+    "alertsDesc": "Få besked hvis en destination går ned. Hav aldrig en ødelagt QR-kode.",
     "export": "Multi-format eksport",
-    "exportDesc": "Download som PNG, SVG, JPEG eller WebP. Perfekt til enhver situation.",
-    "api": "API-adgang",
-    "apiDesc": "Generer og administrer QR-koder programmatisk. Kommer snart."
+    "exportDesc": "Download som PNG, SVG, JPEG eller WebP. Perfekt til enhver situation."
   },
   "useCases": {
     "title": "Bygget til alle brancher",
@@ -55,7 +57,8 @@
     "free": "Gratis",
     "freePrice": "0 kr",
     "freePeriod": "for altid",
-    "freeFeatures": ["3 QR-koder", "1.000 scans/måned", "Basis styling", "Scan-tal"],
+    "freeCta": "Start gratis",
+    "freeFeatures": ["3 QR-koder", "1.000 scans/måned", "Basis styling", "Antal scans"],
     "pro": "Pro",
     "proPrice": "49 kr",
     "proPeriod": "/måned",
@@ -79,19 +82,28 @@
     "q4": "Er det virkelig gratis?",
     "a4": "Ja. Gratisplanen inkluderer 3 dynamiske QR-koder med op til 1.000 scans per måned. Intet kreditkort påkrævet.",
     "q5": "Hvad sker der hvis min destinations-URL går ned?",
-    "a5": "Vi overvåger dine destinationer og sender dig en email-varsel hvis vi opdager et broken link. Du vil aldrig have en QR-kode der peger på en 404-side uden at vide det.",
+    "a5": "Vi overvåger dine destinationer og sender dig en e-mail-notifikation hvis vi opdager et ødelagt link. Du vil aldrig have en QR-kode der peger på en 404-side uden at vide det.",
     "q6": "Kan jeg bruge mit eget logo?",
     "a6": "Ja! Upload dit logo og det bliver indlejret i midten af din QR-kode. Vi justerer automatisk fejlkorrektion så koden stadig scanner perfekt."
   },
   "finalCta": {
     "title": "Klar til at oprette din første dynamiske QR-kode?",
-    "subtitle": "Slut dig til tusindvis af virksomheder der bruger dynamiske QR-koder. Gratis at starte, intet kreditkort påkrævet.",
+    "subtitle": "Opret din første QR-kode på under ét minut. Gratis, intet kreditkort påkrævet.",
     "cta": "Kom i gang gratis"
+  },
+  "socialProof": {
+    "qrCodes": "QR-koder oprettet",
+    "scans": "Scans sporet",
+    "countries": "Lande nået"
   },
   "footer": {
     "product": "Produkt",
     "resources": "Ressourcer",
+    "legal": "Juridisk",
     "tagline": "Dynamiske QR-koder der aldrig går i stykker.",
-    "copyright": "GetDynamicQRCode. Alle rettigheder forbeholdes."
+    "copyright": "GetDynamicQRCode. Alle rettigheder forbeholdes.",
+    "privacy": "Privatlivspolitik",
+    "contact": "Kontakt",
+    "hostedInEu": "Hostet i EU"
   }
 }

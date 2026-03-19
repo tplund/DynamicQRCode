@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import type { Locale } from "@/i18n/config";
 
@@ -8,10 +11,65 @@ interface HeroProps {
     subtitle: string;
     cta: string;
     ctaSecondary: string;
+    generatorPlaceholder: string;
+    generatorDownload: string;
+    generatorUpsell: string;
+    generatorUpsellCta: string;
   };
 }
 
 export default function Hero({ locale, messages }: HeroProps) {
+  const [url, setUrl] = useState("");
+  const containerRef = useRef<HTMLDivElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const qrRef = useRef<any>(null);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function init() {
+      const QRCodeStyling = (await import("qr-code-styling")).default;
+      if (cancelled) return;
+
+      const qr = new QRCodeStyling({
+        width: 200,
+        height: 200,
+        data: "https://example.com",
+        dotsOptions: { type: "rounded", color: "#1A2332" },
+        backgroundOptions: { color: "#ffffff" },
+        cornersSquareOptions: { type: "extra-rounded", color: "#1A2332" },
+        cornersDotOptions: { type: "dot", color: "#1A2332" },
+        qrOptions: { errorCorrectionLevel: "M" },
+      });
+      qrRef.current = qr;
+
+      if (containerRef.current) {
+        containerRef.current.innerHTML = "";
+        qr.append(containerRef.current);
+      }
+
+      setReady(true);
+    }
+
+    init();
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    if (!qrRef.current || !ready) return;
+    qrRef.current.update({
+      data: url || "https://example.com",
+    });
+  }, [url, ready]);
+
+  const handleDownload = () => {
+    qrRef.current?.download({
+      name: "qr-code",
+      extension: "png",
+    });
+  };
+
   return (
     <section className="relative overflow-hidden">
       {/* Subtle gradient background */}
@@ -42,51 +100,48 @@ export default function Hero({ locale, messages }: HeroProps) {
             </div>
           </div>
 
-          {/* SVG QR code illustration */}
+          {/* Live QR Code Generator */}
           <div className="flex justify-center lg:justify-end">
-            <div className="relative">
-              <div className="rounded-2xl bg-white p-8 shadow-2xl shadow-gray-200/50 ring-1 ring-gray-100">
-                <svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  {/* QR pattern */}
-                  {/* Top-left finder */}
-                  <rect x="16" y="16" width="64" height="64" rx="8" fill="#1A2332" />
-                  <rect x="24" y="24" width="48" height="48" rx="4" fill="white" />
-                  <rect x="32" y="32" width="32" height="32" rx="4" fill="#1A2332" />
-                  {/* Top-right finder */}
-                  <rect x="160" y="16" width="64" height="64" rx="8" fill="#1A2332" />
-                  <rect x="168" y="24" width="48" height="48" rx="4" fill="white" />
-                  <rect x="176" y="32" width="32" height="32" rx="4" fill="#1A2332" />
-                  {/* Bottom-left finder */}
-                  <rect x="16" y="160" width="64" height="64" rx="8" fill="#1A2332" />
-                  <rect x="24" y="168" width="48" height="48" rx="4" fill="white" />
-                  <rect x="32" y="176" width="32" height="32" rx="4" fill="#1A2332" />
-                  {/* Data dots with gradient effect */}
-                  <circle cx="104" cy="32" r="8" fill="#3B82F6" />
-                  <circle cx="128" cy="32" r="8" fill="#3B82F6" opacity="0.8" />
-                  <circle cx="104" cy="56" r="8" fill="#3B82F6" opacity="0.6" />
-                  <circle cx="128" cy="56" r="8" fill="#3B82F6" opacity="0.9" />
-                  <circle cx="104" cy="104" r="8" fill="#3B82F6" />
-                  <circle cx="128" cy="104" r="8" fill="#3B82F6" opacity="0.7" />
-                  <circle cx="128" cy="128" r="8" fill="#3B82F6" opacity="0.85" />
-                  <circle cx="152" cy="104" r="8" fill="#3B82F6" opacity="0.5" />
-                  <circle cx="104" cy="128" r="8" fill="#3B82F6" opacity="0.9" />
-                  <circle cx="104" cy="152" r="8" fill="#3B82F6" opacity="0.7" />
-                  <circle cx="152" cy="128" r="8" fill="#3B82F6" />
-                  <circle cx="176" cy="104" r="8" fill="#3B82F6" opacity="0.6" />
-                  <circle cx="200" cy="104" r="8" fill="#3B82F6" opacity="0.8" />
-                  <circle cx="152" cy="152" r="8" fill="#3B82F6" opacity="0.5" />
-                  <circle cx="176" cy="152" r="8" fill="#3B82F6" />
-                  <circle cx="200" cy="152" r="8" fill="#3B82F6" opacity="0.7" />
-                  <circle cx="176" cy="176" r="8" fill="#3B82F6" opacity="0.9" />
-                  <circle cx="200" cy="200" r="8" fill="#3B82F6" opacity="0.6" />
-                  <circle cx="128" cy="176" r="8" fill="#3B82F6" opacity="0.8" />
-                  <circle cx="128" cy="200" r="8" fill="#3B82F6" />
-                  <circle cx="152" cy="200" r="8" fill="#3B82F6" opacity="0.5" />
-                </svg>
+            <div className="relative w-full max-w-sm">
+              <div className="rounded-2xl bg-white p-6 shadow-2xl shadow-gray-200/50 ring-1 ring-gray-100">
+                {/* URL input */}
+                <input
+                  type="url"
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  placeholder={messages.generatorPlaceholder}
+                  className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-gray-400 focus:outline-none transition-colors"
+                />
+
+                {/* QR Preview */}
+                <div
+                  ref={containerRef}
+                  className="mt-4 flex items-center justify-center"
+                  style={{ minHeight: 200 }}
+                />
+
+                {/* Download button */}
+                <button
+                  onClick={handleDownload}
+                  className="mt-4 w-full rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-800 transition-colors cursor-pointer"
+                >
+                  {messages.generatorDownload}
+                </button>
+
+                {/* Upsell */}
+                <div className="mt-4 rounded-lg bg-blue-50 px-4 py-3 text-center">
+                  <p className="text-xs text-gray-500">{messages.generatorUpsell}</p>
+                  <Link
+                    href="/login"
+                    className="text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+                  >
+                    {messages.generatorUpsellCta} →
+                  </Link>
+                </div>
               </div>
 
               {/* Floating analytics badge */}
-              <div className="absolute -bottom-4 -right-4 rounded-xl bg-white px-4 py-3 shadow-lg ring-1 ring-gray-100">
+              <div className="absolute -bottom-4 -right-4 rounded-xl bg-white px-4 py-3 shadow-lg ring-1 ring-gray-100 hidden sm:block">
                 <div className="flex items-center gap-3">
                   <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-green-100">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2">
@@ -101,7 +156,7 @@ export default function Hero({ locale, messages }: HeroProps) {
               </div>
 
               {/* Floating branded badge */}
-              <div className="absolute -top-3 -left-3 rounded-lg bg-blue-600 px-3 py-1.5 shadow-md">
+              <div className="absolute -top-3 -left-3 rounded-lg bg-blue-600 px-3 py-1.5 shadow-md hidden sm:block">
                 <p className="text-xs font-semibold text-white">✨ Branded</p>
               </div>
             </div>

@@ -186,6 +186,7 @@ function Section({
 
 export default function QRStylePicker({ style, onChange, logoData, onLogoChange }: QRStylePickerProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const update = (partial: Partial<QRStyleConfig>) => {
     onChange({ ...style, ...partial });
@@ -245,43 +246,6 @@ export default function QRStylePicker({ style, onChange, logoData, onLogoChange 
             </button>
           ))}
         </div>
-      </Section>
-
-      {/* Form & Stil — closed by default to reduce overwhelm */}
-      <Section title="Form & Stil" defaultOpen={false}>
-        <ButtonGroup
-          label="QR-form"
-          options={[
-            { value: "square" as QRShape, label: "Firkantet" },
-            { value: "circle" as QRShape, label: "Cirkel" },
-          ]}
-          value={style.shape || "square"}
-          onSelect={(v) => update({ shape: v as QRShape })}
-        />
-
-        <VisualButtonGroup
-          label="Dot-form"
-          options={DOT_TYPES}
-          value={style.dot_type}
-          onSelect={(v) => update({ dot_type: v })}
-          showPreview={true}
-        />
-
-        <VisualButtonGroup
-          label="Hjørne-dot"
-          options={CORNER_DOT_TYPES}
-          value={style.corner_dot_type || "dot"}
-          onSelect={(v) => update({ corner_dot_type: v })}
-          showPreview={true}
-        />
-
-        <VisualButtonGroup
-          label="Hjørne-ramme"
-          options={CORNER_SQUARE_TYPES}
-          value={style.corner_square_type || "extra-rounded"}
-          onSelect={(v) => update({ corner_square_type: v })}
-          showPreview={true}
-        />
       </Section>
 
       {/* Farver — open by default, quick to scan */}
@@ -430,95 +394,145 @@ export default function QRStylePicker({ style, onChange, logoData, onLogoChange 
         )}
       </Section>
 
-      {/* Logo */}
-      <Section title="Logo" defaultOpen={false}>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          onChange={handleLogoUpload}
-          className="hidden"
-        />
+      {/* Advanced toggle */}
+      <button
+        onClick={() => setShowAdvanced(!showAdvanced)}
+        className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors cursor-pointer"
+      >
+        {showAdvanced ? "Skjul avancerede indstillinger" : "Vis avancerede indstillinger"}
+        <span className="text-xs text-gray-400">{showAdvanced ? "▲" : "▼"}</span>
+      </button>
 
-        {logoData ? (
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={logoData}
-                alt="Logo"
-                className="h-16 w-16 rounded-lg border border-gray-200 object-contain bg-white p-1"
-              />
-              <div className="flex gap-2">
-                <button
-                  onClick={() => fileInputRef.current?.click()}
-                  className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm hover:border-gray-500 transition-colors cursor-pointer"
-                >
-                  Skift logo
-                </button>
-                <button
-                  onClick={() => onLogoChange?.(null)}
-                  className="rounded-lg border border-red-300 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
-                >
-                  Fjern
-                </button>
+      {showAdvanced && (
+        <>
+          {/* Form & Stil */}
+          <Section title="Form & Stil" defaultOpen={false}>
+            <ButtonGroup
+              label="QR-form"
+              options={[
+                { value: "square" as QRShape, label: "Firkantet" },
+                { value: "circle" as QRShape, label: "Cirkel" },
+              ]}
+              value={style.shape || "square"}
+              onSelect={(v) => update({ shape: v as QRShape })}
+            />
+
+            <VisualButtonGroup
+              label="Dot-form"
+              options={DOT_TYPES}
+              value={style.dot_type}
+              onSelect={(v) => update({ dot_type: v })}
+              showPreview={true}
+            />
+
+            <VisualButtonGroup
+              label="Hjørne-dot"
+              options={CORNER_DOT_TYPES}
+              value={style.corner_dot_type || "dot"}
+              onSelect={(v) => update({ corner_dot_type: v })}
+              showPreview={true}
+            />
+
+            <VisualButtonGroup
+              label="Hjørne-ramme"
+              options={CORNER_SQUARE_TYPES}
+              value={style.corner_square_type || "extra-rounded"}
+              onSelect={(v) => update({ corner_square_type: v })}
+              showPreview={true}
+            />
+          </Section>
+
+          {/* Logo */}
+          <Section title="Logo" defaultOpen={false}>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleLogoUpload}
+              className="hidden"
+            />
+
+            {logoData ? (
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={logoData}
+                    alt="Logo"
+                    className="h-16 w-16 rounded-lg border border-gray-200 object-contain bg-white p-1"
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm hover:border-gray-500 transition-colors cursor-pointer"
+                    >
+                      Skift logo
+                    </button>
+                    <button
+                      onClick={() => onLogoChange?.(null)}
+                      className="rounded-lg border border-red-300 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                    >
+                      Fjern
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Logostørrelse: {Math.round((style.logo_size || 0.4) * 100)}%
+                  </label>
+                  <input
+                    type="range"
+                    min={0.2}
+                    max={0.5}
+                    step={0.05}
+                    value={style.logo_size || 0.4}
+                    onChange={(e) => update({ logo_size: Number(e.target.value) })}
+                    className="w-full"
+                  />
+                </div>
               </div>
-            </div>
+            ) : (
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="w-full rounded-lg border-2 border-dashed border-gray-300 px-4 py-6 text-sm text-gray-500 hover:border-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+              >
+                Klik for at uploade logo (maks 200KB)
+              </button>
+            )}
+          </Section>
+
+          {/* Eksport */}
+          <Section title="Eksport" defaultOpen={false}>
+            <ButtonGroup
+              label="Format"
+              options={[
+                { value: "png" as ExportFormat, label: "PNG" },
+                { value: "svg" as ExportFormat, label: "SVG" },
+                { value: "jpeg" as ExportFormat, label: "JPEG" },
+                { value: "webp" as ExportFormat, label: "WebP" },
+              ]}
+              value={style.export_format || "png"}
+              onSelect={(v) => update({ export_format: v as ExportFormat })}
+            />
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Logostørrelse: {Math.round((style.logo_size || 0.4) * 100)}%
+                Størrelse: {style.size}px
               </label>
               <input
                 type="range"
-                min={0.2}
-                max={0.5}
-                step={0.05}
-                value={style.logo_size || 0.4}
-                onChange={(e) => update({ logo_size: Number(e.target.value) })}
+                min={200}
+                max={600}
+                step={50}
+                value={style.size}
+                onChange={(e) => update({ size: Number(e.target.value) })}
                 className="w-full"
               />
             </div>
-          </div>
-        ) : (
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="w-full rounded-lg border-2 border-dashed border-gray-300 px-4 py-6 text-sm text-gray-500 hover:border-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
-          >
-            Klik for at uploade logo (maks 200KB)
-          </button>
-        )}
-      </Section>
-
-      {/* Eksport */}
-      <Section title="Eksport" defaultOpen={false}>
-        <ButtonGroup
-          label="Format"
-          options={[
-            { value: "png" as ExportFormat, label: "PNG" },
-            { value: "svg" as ExportFormat, label: "SVG" },
-            { value: "jpeg" as ExportFormat, label: "JPEG" },
-            { value: "webp" as ExportFormat, label: "WebP" },
-          ]}
-          value={style.export_format || "png"}
-          onSelect={(v) => update({ export_format: v as ExportFormat })}
-        />
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Størrelse: {style.size}px
-          </label>
-          <input
-            type="range"
-            min={200}
-            max={600}
-            step={50}
-            value={style.size}
-            onChange={(e) => update({ size: Number(e.target.value) })}
-            className="w-full"
-          />
-        </div>
-      </Section>
+          </Section>
+        </>
+      )}
     </div>
   );
 }

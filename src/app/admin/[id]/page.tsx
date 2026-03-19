@@ -112,55 +112,8 @@ export default function EditQR() {
 
       <div className="grid gap-8 lg:grid-cols-2">
         <div className="space-y-5">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Label</label>
-            <input
-              type="text"
-              value={label}
-              onChange={(e) => setLabel(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Destination URL</label>
-            <input
-              type="url"
-              value={destinationUrl}
-              onChange={(e) => setDestinationUrl(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-            />
-          </div>
-
-          <hr className="border-gray-200" />
-
-          <QRStylePicker
-            style={style}
-            onChange={setStyle}
-            logoData={logoData}
-            onLogoChange={setLogoData}
-          />
-
-          <div className="flex gap-3">
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-medium text-white transition-colors disabled:opacity-50 cursor-pointer ${
-                saved ? "bg-green-600 hover:bg-green-600" : "bg-gray-900 hover:bg-gray-800"
-              }`}
-            >
-              {saving ? "Gemmer..." : saved ? "Gemt!" : "Gem ændringer"}
-            </button>
-            <button
-              onClick={handleDelete}
-              className="rounded-lg border border-red-200 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
-            >
-              Slet
-            </button>
-          </div>
-
-          {/* Analytics */}
-          <div className="mt-8 rounded-xl border border-gray-200 bg-white p-6">
+          {/* Analytics — at top for quick access */}
+          <div className="rounded-xl border border-gray-200 bg-white p-6">
             <h2 className="text-lg font-bold text-gray-900 mb-4">Analytics</h2>
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="rounded-lg bg-gray-50 p-4">
@@ -206,6 +159,55 @@ export default function EditQR() {
                 </div>
               </div>
             )}
+          </div>
+
+          <hr className="border-gray-200" />
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Label</label>
+            <input
+              type="text"
+              value={label}
+              onChange={(e) => setLabel(e.target.value)}
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Destination URL</label>
+            <input
+              type="url"
+              value={destinationUrl}
+              onChange={(e) => setDestinationUrl(e.target.value)}
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+            />
+          </div>
+
+          <hr className="border-gray-200" />
+
+          <QRStylePicker
+            style={style}
+            onChange={setStyle}
+            logoData={logoData}
+            onLogoChange={setLogoData}
+          />
+
+          <div className="flex gap-3">
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-medium text-white transition-colors disabled:opacity-50 cursor-pointer ${
+                saved ? "bg-green-600 hover:bg-green-600" : "bg-gray-900 hover:bg-gray-800"
+              }`}
+            >
+              {saving ? "Gemmer..." : saved ? "Gemt!" : "Gem ændringer"}
+            </button>
+            <button
+              onClick={handleDelete}
+              className="rounded-lg border border-red-200 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+            >
+              Slet
+            </button>
           </div>
         </div>
 
