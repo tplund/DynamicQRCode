@@ -1,4 +1,4 @@
-const ADMIN_URL = "https://qr.activatelms.com/admin";
+const ADMIN_URL = "https://getdynamicqrcode.com/admin";
 
 function wrap(content: string): string {
   return `

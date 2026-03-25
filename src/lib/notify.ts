@@ -60,7 +60,7 @@ export async function notifyBrokenRedirect({
         <tr><td style="padding:8px 12px;font-weight:bold;border:1px solid #dee2e6;">Referer</td><td style="padding:8px 12px;border:1px solid #dee2e6;">${referer || "Ingen"}</td></tr>
         <tr style="background:#f8f9fa;"><td style="padding:8px 12px;font-weight:bold;border:1px solid #dee2e6;">Browser</td><td style="padding:8px 12px;border:1px solid #dee2e6;font-size:12px;">${userAgent || "Ukendt"}</td></tr>
       </table>
-      <p style="margin-top:16px;color:#666;">💡 Opret evt. QR-koden i <a href="https://qr.activatelms.com/admin">admin-panelet</a>.</p>
+      <p style="margin-top:16px;color:#666;">💡 Opret evt. QR-koden i <a href="https://getdynamicqrcode.com/admin">admin-panelet</a>.</p>
     </div>
     `,
   });
@@ -86,7 +86,7 @@ export async function notifyDestination404({
         <tr><td style="padding:8px 12px;font-weight:bold;border:1px solid #dee2e6;">Destination</td><td style="padding:8px 12px;border:1px solid #dee2e6;">${destinationUrl}</td></tr>
         <tr style="background:#f8f9fa;"><td style="padding:8px 12px;font-weight:bold;border:1px solid #dee2e6;">HTTP Status</td><td style="padding:8px 12px;border:1px solid #dee2e6;color:#c0392b;font-weight:bold;">${statusCode === 0 ? "Utilgængelig" : statusCode}</td></tr>
       </table>
-      <p style="margin-top:16px;color:#666;">🔧 Ret destination-URL i <a href="https://qr.activatelms.com/admin">admin-panelet</a>.</p>
+      <p style="margin-top:16px;color:#666;">🔧 Ret destination-URL i <a href="https://getdynamicqrcode.com/admin">admin-panelet</a>.</p>
     </div>
     `,
   });
