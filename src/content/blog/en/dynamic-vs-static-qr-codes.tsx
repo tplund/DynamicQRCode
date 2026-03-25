@@ -31,7 +31,7 @@ export default function Article() {
       <p>
         Static QR codes are always free — any generator can create them. Dynamic QR codes
         require a service to manage the redirect. Most providers offer free tiers with
-        limited codes, and paid plans starting from around 49 kr/month for professional use.
+        limited codes, and paid plans starting from around $7/month for professional use.
       </p>
 
       <h2>Our recommendation</h2>

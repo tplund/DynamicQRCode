@@ -31,7 +31,7 @@ export default function Article() {
       <p>
         Statiske QR-koder er altid gratis — enhver generator kan oprette dem. Dynamiske
         QR-koder kræver en service til at håndtere redirect. De fleste udbydere tilbyder
-        gratis planer med begrænsede koder, og betalte planer fra omkring 49 kr/måned til
+        gratis planer med begrænsede koder, og betalte planer fra omkring $7/måned til
         professionelt brug.
       </p>
 

@@ -17,7 +17,7 @@ export default function Article() {
         <li>Download and use it anywhere</li>
       </ol>
       <h2>When to upgrade</h2>
-      <p>The free plan is perfect for personal use or testing. When you need more than 3 codes, deeper analytics, or custom branding with logo overlays, the Pro plan at 49 kr/month gives you everything you need.</p>
+      <p>The free plan is perfect for personal use or testing. When you need more than 3 codes, deeper analytics, or custom branding with logo overlays, the Pro plan at $7/month gives you everything you need.</p>
       <h2>Why choose GetDynamicQRCode?</h2>
       <ul>
         <li>No watermarks on free codes</li>

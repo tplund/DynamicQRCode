@@ -12,6 +12,10 @@ export const users = pgTable("users", {
   stripeSubscriptionId: text("stripe_subscription_id"),
   stripePriceId: text("stripe_price_id"),
   stripeCurrentPeriodEnd: timestamp("stripe_current_period_end"),
+  lemonSqueezyCustomerId: text("lemonsqueezy_customer_id").unique(),
+  lemonSqueezySubscriptionId: text("lemonsqueezy_subscription_id"),
+  lemonSqueezyVariantId: text("lemonsqueezy_variant_id"),
+  lemonSqueezyCurrentPeriodEnd: timestamp("lemonsqueezy_current_period_end"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

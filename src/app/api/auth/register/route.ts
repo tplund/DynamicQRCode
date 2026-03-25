@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { isRegistrationEnabled } from "@/lib/env";
+import { sendWelcomeEmail } from "@/lib/transactional-emails";
 
 const registerSchema = z.object({
   email: z.string().email("Ugyldig email"),
@@ -55,6 +56,11 @@ export async function POST(request: NextRequest) {
     role: "user",
     plan: "free",
   });
+
+  // Fire-and-forget welcome email
+  sendWelcomeEmail(normalizedEmail, name).catch((err) =>
+    console.error("[register] Failed to send welcome email:", err)
+  );
 
   return NextResponse.json({ ok: true }, { status: 201 });
 }

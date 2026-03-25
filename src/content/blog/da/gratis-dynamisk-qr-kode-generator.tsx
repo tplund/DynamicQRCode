@@ -17,7 +17,7 @@ export default function Article() {
         <li>Download og brug den hvor som helst</li>
       </ol>
       <h2>Hvornår du skal opgradere</h2>
-      <p>Gratisplanen er perfekt til personlig brug eller test. Når du har brug for mere end 3 koder, dybere analytics eller custom branding med logo-overlays, giver Pro-planen til 49 kr/måned dig alt du har brug for.</p>
+      <p>Gratisplanen er perfekt til personlig brug eller test. Når du har brug for mere end 3 koder, dybere analytics eller custom branding med logo-overlays, giver Pro-planen til $7/måned dig alt du har brug for.</p>
       <h2>Hvorfor vælge GetDynamicQRCode?</h2>
       <ul>
         <li>Ingen vandmærker på gratis koder</li>

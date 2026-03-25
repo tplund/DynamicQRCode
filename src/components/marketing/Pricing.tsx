@@ -1,22 +1,30 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 
 interface PricingProps {
   messages: {
     title: string;
     subtitle: string;
+    monthly: string;
+    yearly: string;
+    save: string;
+    perMonth: string;
+    billedYearly: string;
     free: string;
     freePrice: string;
     freePeriod: string;
     freeCta: string;
     freeFeatures: string[];
     pro: string;
-    proPrice: string;
-    proPeriod: string;
+    proPriceMonthly: string;
+    proPriceYearly: string;
     proFeatures: string[];
     proCta: string;
     business: string;
-    businessPrice: string;
-    businessPeriod: string;
+    businessPriceMonthly: string;
+    businessPriceYearly: string;
     businessFeatures: string[];
     businessCta: string;
     popular: string;
@@ -24,6 +32,8 @@ interface PricingProps {
 }
 
 export default function Pricing({ messages }: PricingProps) {
+  const [yearly, setYearly] = useState(true);
+
   const plans = [
     {
       name: messages.free,
@@ -33,24 +43,27 @@ export default function Pricing({ messages }: PricingProps) {
       cta: messages.freeCta,
       highlighted: false,
       href: "/login",
+      isFree: true,
     },
     {
       name: messages.pro,
-      price: messages.proPrice,
-      period: messages.proPeriod,
+      price: yearly ? messages.proPriceYearly : messages.proPriceMonthly,
+      period: messages.perMonth,
       features: messages.proFeatures,
       cta: messages.proCta,
       highlighted: true,
       href: "/login",
+      isFree: false,
     },
     {
       name: messages.business,
-      price: messages.businessPrice,
-      period: messages.businessPeriod,
+      price: yearly ? messages.businessPriceYearly : messages.businessPriceMonthly,
+      period: messages.perMonth,
       features: messages.businessFeatures,
       cta: messages.businessCta,
       highlighted: false,
       href: "/login",
+      isFree: false,
     },
   ];
 
@@ -64,7 +77,32 @@ export default function Pricing({ messages }: PricingProps) {
           {messages.subtitle}
         </p>
 
-        <div className="mt-16 grid gap-6 md:grid-cols-3 items-start">
+        {/* Billing toggle */}
+        <div className="mt-10 flex items-center justify-center gap-3">
+          <span className={`text-sm font-medium ${!yearly ? "text-gray-900" : "text-gray-500"}`}>
+            {messages.monthly}
+          </span>
+          <button
+            onClick={() => setYearly(!yearly)}
+            className={`relative h-7 w-12 rounded-full transition-colors cursor-pointer ${
+              yearly ? "bg-blue-600" : "bg-gray-300"
+            }`}
+          >
+            <span
+              className={`absolute top-0.5 left-0.5 h-6 w-6 rounded-full bg-white shadow transition-transform ${
+                yearly ? "translate-x-5" : ""
+              }`}
+            />
+          </button>
+          <span className={`text-sm font-medium ${yearly ? "text-gray-900" : "text-gray-500"}`}>
+            {messages.yearly}
+          </span>
+          <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-semibold text-green-700">
+            {messages.save} 22%
+          </span>
+        </div>
+
+        <div className="mt-12 grid gap-6 md:grid-cols-3 items-start">
           {plans.map((plan, i) => (
             <div
               key={i}
@@ -89,9 +127,14 @@ export default function Pricing({ messages }: PricingProps) {
                   {plan.price}
                 </span>
                 <span className={`text-sm ${plan.highlighted ? "text-gray-400" : "text-gray-500"}`}>
-                  {plan.period}
+                  {plan.isFree ? plan.period : plan.period}
                 </span>
               </div>
+              {!plan.isFree && yearly && (
+                <p className={`mt-1 text-xs ${plan.highlighted ? "text-gray-400" : "text-gray-500"}`}>
+                  {messages.billedYearly}
+                </p>
+              )}
 
               <ul className="mt-8 space-y-3">
                 {plan.features.map((feature, j) => (

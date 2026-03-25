@@ -60,7 +60,7 @@ function AdminGuard({ children }: { children: React.ReactNode }) {
   async function openBillingPortal() {
     setPortalLoading(true);
     try {
-      const res = await fetch("/api/stripe/portal", { method: "POST" });
+      const res = await fetch("/api/lemonsqueezy/portal", { method: "POST" });
       if (res.ok) {
         const { url } = await res.json();
         window.location.href = url;
@@ -77,12 +77,15 @@ function AdminGuard({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-6">
             <a href="/admin" className="text-lg font-bold text-gray-900">DynamicQR</a>
             <a href="/admin/create" className="text-sm text-gray-600 hover:text-gray-900">+ Opret ny</a>
+            {role === "super_admin" && (
+              <a href="/admin/economy" className="text-sm text-gray-600 hover:text-gray-900">Økonomi</a>
+            )}
           </div>
           <div className="flex items-center gap-4">
             <PlanBadge plan={plan} role={role} />
             {plan === "free" && role !== "super_admin" && (
               <a
-                href="/en/pricing"
+                href="/admin/upgrade"
                 className="text-xs font-medium text-blue-600 hover:text-blue-800"
               >
                 Opgrader

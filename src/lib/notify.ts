@@ -1,7 +1,11 @@
 const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || "tlund@elearningspecialist.com";
-const FROM_EMAIL = process.env.FROM_EMAIL || "tlund@elearningspecialist.com";
+const FROM_EMAIL = process.env.FROM_EMAIL || "hello@getdynamicqrcode.com";
 
-async function sendMail(subject: string, htmlContent: string) {
+export async function sendMail(params: {
+  to: { email: string; name?: string };
+  subject: string;
+  htmlContent: string;
+}) {
   const apiKey = process.env.MAILJET_API_KEY;
   const apiSecret = process.env.MAILJET_API_SECRET;
 
@@ -17,14 +21,14 @@ async function sendMail(subject: string, htmlContent: string) {
     await mailjet.post("send", { version: "v3.1" }).request({
       Messages: [
         {
-          From: { Email: FROM_EMAIL, Name: "DynamicQR" },
-          To: [{ Email: NOTIFY_EMAIL, Name: "Thomas" }],
-          Subject: subject,
-          HTMLPart: htmlContent,
+          From: { Email: FROM_EMAIL, Name: "GetDynamicQRCode" },
+          To: [{ Email: params.to.email, Name: params.to.name || "" }],
+          Subject: params.subject,
+          HTMLPart: params.htmlContent,
         },
       ],
     });
-    console.log(`[notify] Email sent: ${subject}`);
+    console.log(`[notify] Email sent: ${params.subject}`);
   } catch (err) {
     console.error("[notify] Failed to send email:", err);
   }
@@ -43,9 +47,10 @@ export async function notifyBrokenRedirect({
   referer: string | null;
   url: string;
 }) {
-  await sendMail(
-    `⚠️ Ukendt QR-kode: /${slug}`,
-    `
+  await sendMail({
+    to: { email: NOTIFY_EMAIL, name: "Thomas" },
+    subject: `⚠️ Ukendt QR-kode: /${slug}`,
+    htmlContent: `
     <div style="font-family:sans-serif;max-width:600px;">
       <h2 style="color:#c0392b;">En bruger ramte en ukendt QR-kode</h2>
       <table style="border-collapse:collapse;width:100%;">
@@ -57,8 +62,8 @@ export async function notifyBrokenRedirect({
       </table>
       <p style="margin-top:16px;color:#666;">💡 Opret evt. QR-koden i <a href="https://qr.activatelms.com/admin">admin-panelet</a>.</p>
     </div>
-    `
-  );
+    `,
+  });
 }
 
 export async function notifyDestination404({
@@ -70,9 +75,10 @@ export async function notifyDestination404({
   destinationUrl: string;
   statusCode: number;
 }) {
-  await sendMail(
-    `⚠️ Død destination: /${slug}`,
-    `
+  await sendMail({
+    to: { email: NOTIFY_EMAIL, name: "Thomas" },
+    subject: `⚠️ Død destination: /${slug}`,
+    htmlContent: `
     <div style="font-family:sans-serif;max-width:600px;">
       <h2 style="color:#e67e22;">En QR-kode peger på en utilgængelig side</h2>
       <table style="border-collapse:collapse;width:100%;">
@@ -82,6 +88,6 @@ export async function notifyDestination404({
       </table>
       <p style="margin-top:16px;color:#666;">🔧 Ret destination-URL i <a href="https://qr.activatelms.com/admin">admin-panelet</a>.</p>
     </div>
-    `
-  );
+    `,
+  });
 }
