@@ -16,28 +16,8 @@ const SKIP_PATHS = [
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const hostname = request.headers.get("host") || "";
 
-  // --- 1. Legacy domain backward compat (qr.activatelms.com) ---
-  // Rewrite bare slugs to /go/[slug] so old QR codes keep working
-  if (hostname.includes("activatelms.com")) {
-    const isSkipPath = SKIP_PATHS.some((p) => pathname.startsWith(p));
-    const isStaticFile = pathname.includes(".");
-
-    if (!isSkipPath && !isStaticFile && pathname !== "/") {
-      // Rewrite /{slug} → /go/{slug} internally (no visible redirect)
-      const url = request.nextUrl.clone();
-      url.pathname = `/go${pathname}`;
-      return NextResponse.rewrite(url);
-    }
-
-    // Root of activatelms → redirect to main domain
-    if (pathname === "/") {
-      return NextResponse.redirect("https://getdynamicqrcode.com");
-    }
-  }
-
-  // --- 2. Auth protection for /admin ---
+  // --- 1. Auth protection for /admin ---
   if (pathname.startsWith("/admin")) {
     const token = await getToken({
       req: request,
