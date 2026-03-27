@@ -91,75 +91,75 @@ export default function CreateQR() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">Opret QR-kode</h1>
+      <h1 className="mb-6 text-xl font-semibold text-white">Opret QR-kode</h1>
 
       <div className="grid gap-8 lg:grid-cols-2">
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Label</label>
+            <label className="block text-sm font-medium text-neutral-300 mb-1.5">Label</label>
             <input
               type="text"
               value={label}
               onChange={(e) => setLabel(e.target.value)}
               placeholder="Fx: Aarsleff Rail - Adgang"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+              className="w-full rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-white placeholder-neutral-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               required
             />
             {labelDuplicate && (
-              <p className="mt-1 text-xs text-amber-600">
+              <p className="mt-1 text-xs text-amber-400">
                 Du har allerede en QR-kode med dette navn
               </p>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Slug</label>
+            <label className="block text-sm font-medium text-neutral-300 mb-1.5">Slug</label>
             <div className="flex items-center gap-1">
-              <span className="text-sm text-gray-400">{baseUrl}/go/</span>
+              <span className="text-sm text-neutral-500">/go/</span>
               <input
                 type="text"
                 value={slug}
                 onChange={(e) => handleSlugChange(e.target.value)}
                 placeholder="aarsleff"
-                className={`flex-1 rounded-lg border px-3 py-2 text-sm font-mono ${
+                className={`flex-1 rounded-lg border bg-neutral-800 px-3 py-2 text-sm font-mono text-white placeholder-neutral-500 focus:outline-none focus:ring-1 ${
                   slugStatus === "taken"
-                    ? "border-red-300"
+                    ? "border-red-500 focus:ring-red-500"
                     : slugStatus === "available"
-                    ? "border-green-300"
-                    : "border-gray-300"
+                    ? "border-emerald-500 focus:ring-emerald-500"
+                    : "border-neutral-700 focus:border-blue-500 focus:ring-blue-500"
                 }`}
                 required
               />
             </div>
-            <div className="mt-1 flex items-center gap-1">
+            <div className="mt-1">
               {slugStatus === "checking" && (
-                <p className="text-xs text-gray-400">Tjekker...</p>
+                <p className="text-xs text-neutral-500">Tjekker...</p>
               )}
               {slugStatus === "available" && (
-                <p className="text-xs text-green-600">&#10003; Slug er ledig</p>
+                <p className="text-xs text-emerald-400">&#10003; Slug er ledig</p>
               )}
               {slugStatus === "taken" && (
-                <p className="text-xs text-red-600">&#10007; Slug er optaget</p>
+                <p className="text-xs text-red-400">&#10007; Slug er optaget</p>
               )}
               {slugStatus === "idle" && slug === "" && (
-                <p className="text-xs text-amber-600">Slug kan ikke ændres efter oprettelse</p>
+                <p className="text-xs text-amber-400">Slug kan ikke ændres efter oprettelse</p>
               )}
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Destination URL</label>
+            <label className="block text-sm font-medium text-neutral-300 mb-1.5">Destination URL</label>
             <input
               type="url"
               value={destinationUrl}
               onChange={(e) => setDestinationUrl(e.target.value)}
               placeholder="https://example.com/signup"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+              className="w-full rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-white placeholder-neutral-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               required
             />
           </div>
 
-          <hr className="border-gray-200" />
+          <hr className="border-neutral-800" />
 
           <QRStylePicker
             style={style}
@@ -168,20 +168,26 @@ export default function CreateQR() {
             onLogoChange={setLogoData}
           />
 
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && (
+            <div className="rounded-lg border border-red-900/50 bg-red-950/20 px-3 py-2">
+              <p className="text-sm text-red-400">{error}</p>
+            </div>
+          )}
 
           <button
             type="submit"
             disabled={saving || slugStatus === "taken"}
-            className="w-full rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-800 transition-colors disabled:opacity-50 cursor-pointer"
+            className="w-full rounded-lg bg-white px-4 py-2.5 text-sm font-medium text-neutral-900 transition-colors hover:bg-neutral-200 disabled:opacity-50 cursor-pointer"
           >
             {saving ? "Gemmer..." : "Opret QR-kode"}
           </button>
         </form>
 
         <div className="lg:sticky lg:top-8 self-start">
-          <label className="block text-sm font-medium text-gray-700 mb-3">Preview</label>
-          <QRCodePreview url={previewUrl} style={style} logoData={logoData} />
+          <label className="block text-sm font-medium text-neutral-300 mb-3">Preview</label>
+          <div className="rounded-xl border border-neutral-800 bg-neutral-900 p-6">
+            <QRCodePreview url={previewUrl} style={style} logoData={logoData} />
+          </div>
         </div>
       </div>
     </div>

@@ -118,6 +118,20 @@ export async function GET() {
     .orderBy(sql`${users.createdAt} DESC`)
     .limit(10);
 
+  // All users with usage stats (for super_admin users tab)
+  const allUsersData = await db
+    .select({
+      id: users.id,
+      email: users.email,
+      plan: users.plan,
+      role: users.role,
+      createdAt: users.createdAt,
+      qrCount: sql<number>`(SELECT count(*) FROM qr_codes WHERE user_id = ${users.id})`.as("qr_count"),
+      scanCount: sql<number>`(SELECT count(*) FROM scans INNER JOIN qr_codes ON scans.qr_code_id = qr_codes.id WHERE qr_codes.user_id = ${users.id})`.as("scan_count"),
+    })
+    .from(users)
+    .orderBy(sql`${users.createdAt} DESC`);
+
   return NextResponse.json({
     users: {
       total: totalUsers,
@@ -144,6 +158,16 @@ export async function GET() {
       plan: u.plan,
       createdAt: u.createdAt,
       qrCount: Number(u.qrCount),
+    })),
+    allUsers: allUsersData.map((u) => ({
+      id: u.id,
+      email: u.email,
+      plan: u.plan,
+      role: u.role,
+      createdAt: u.createdAt,
+      qrCount: Number(u.qrCount),
+      scanCount: Number(u.scanCount),
+      lastActive: null,
     })),
   });
 }
