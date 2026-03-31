@@ -17,6 +17,9 @@
     "ctaSecondary": "Se priser",
     "generatorPlaceholder": "Indtast en URL...",
     "generatorDownload": "Download QR-kode",
+    "generatorEmailPlaceholder": "Din email-adresse",
+    "generatorEmailSubmit": "Send mig QR-koden",
+    "generatorEmailNote": "Vi sender dig QR-koden og tips til dynamiske QR-koder",
     "generatorUpsell": "Vil du ændre linket senere?",
     "generatorUpsellCta": "Opret en dynamisk QR-kode — gratis"
   },

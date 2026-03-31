@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, timestamp, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, timestamp, jsonb, integer } from "drizzle-orm/pg-core";
 import type { QRStyleConfig } from "@/lib/types";
 
 export const users = pgTable("users", {
@@ -46,4 +46,13 @@ export const scans = pgTable("scans", {
   userAgent: text("user_agent"),
   country: text("country"),
   referer: text("referer"),
+});
+
+export const leads = pgTable("leads", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  email: text("email").notNull().unique(),
+  source: text("source").notNull().default("landing_qr_generator"),
+  dripStep: integer("drip_step").notNull().default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  convertedAt: timestamp("converted_at"), // set when they register
 });

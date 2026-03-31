@@ -84,3 +84,78 @@ export function planChangeHtml(params: {
     </p>
   `);
 }
+
+// --- Lead nurture drip emails ---
+
+const SIGNUP_URL = "https://getdynamicqrcode.com/login";
+
+export function leadWelcomeEmailHtml(): string {
+  return wrap(`
+    <h2 style="color:#1A2332;">Your QR code is ready!</h2>
+    <p style="color:#555;line-height:1.6;">
+      Thanks for trying our free QR code generator. Your code is a <strong>static</strong> QR code &mdash;
+      meaning the URL is baked in permanently.
+    </p>
+    <p style="color:#555;line-height:1.6;">
+      But what happens when that URL changes? The QR code breaks. And if it's already printed on
+      packaging, signage, or business cards &mdash; there's no way to fix it.
+    </p>
+    <p style="color:#555;line-height:1.6;">
+      With a <strong>dynamic QR code</strong>, you can update the destination anytime &mdash; without reprinting.
+    </p>
+    <p style="margin-top:20px;">
+      <a href="${SIGNUP_URL}" style="display:inline-block;background:#1A2332;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">
+        Create a free dynamic QR code
+      </a>
+    </p>
+    <p style="margin-top:16px;color:#999;font-size:13px;">Free plan includes 3 dynamic QR codes. No credit card required.</p>
+  `);
+}
+
+export function leadDrip1Html(): string {
+  return wrap(`
+    <h2 style="color:#1A2332;">When QR codes go wrong</h2>
+    <p style="color:#555;line-height:1.6;">
+      Imagine this: you're at a nature trail, and you scan a QR code on an information sign. Instead of
+      useful info, you get a 404 &mdash; page not found. That's what happens with static QR codes when
+      the destination changes.
+    </p>
+    <p style="color:#555;line-height:1.6;">
+      This happens more than you'd think. Municipalities, event organizers, and businesses print
+      thousands of QR codes every year that eventually go dead.
+    </p>
+    <p style="color:#555;line-height:1.6;">
+      A <strong>dynamic QR code</strong> solves this. Change the destination in seconds. The printed
+      code stays the same. No reprinting. No dead links.
+    </p>
+    <p style="margin-top:20px;">
+      <a href="${SIGNUP_URL}" style="display:inline-block;background:#1A2332;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">
+        Try it free &mdash; 3 dynamic QR codes
+      </a>
+    </p>
+  `);
+}
+
+export function leadDrip2Html(): string {
+  return wrap(`
+    <h2 style="color:#1A2332;">Know who scans your codes</h2>
+    <p style="color:#555;line-height:1.6;">
+      With a static QR code, you have zero visibility. Is anyone scanning it? Which country? Which device?
+      You're flying blind.
+    </p>
+    <p style="color:#555;line-height:1.6;">
+      GetDynamicQRCode gives you <strong>real-time analytics</strong> for every scan: country, device,
+      time of day. See what works and optimize.
+    </p>
+    <p style="color:#555;line-height:1.6;">
+      Plus, you get <strong>email alerts</strong> if a destination goes down &mdash; so you'll never have
+      a broken QR code without knowing about it.
+    </p>
+    <p style="margin-top:20px;">
+      <a href="${SIGNUP_URL}" style="display:inline-block;background:#1A2332;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">
+        Start tracking your QR codes
+      </a>
+    </p>
+    <p style="margin-top:16px;color:#999;font-size:13px;">Free forever. Upgrade only if you need more.</p>
+  `);
+}

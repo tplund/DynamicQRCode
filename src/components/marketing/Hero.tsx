@@ -13,6 +13,9 @@ interface HeroProps {
     ctaSecondary: string;
     generatorPlaceholder: string;
     generatorDownload: string;
+    generatorEmailPlaceholder: string;
+    generatorEmailSubmit: string;
+    generatorEmailNote: string;
     generatorUpsell: string;
     generatorUpsellCta: string;
   };
@@ -20,6 +23,10 @@ interface HeroProps {
 
 export default function Hero({ locale, messages }: HeroProps) {
   const [url, setUrl] = useState("");
+  const [email, setEmail] = useState("");
+  const [showEmailGate, setShowEmailGate] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [downloaded, setDownloaded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const qrRef = useRef<any>(null);
@@ -63,11 +70,35 @@ export default function Hero({ locale, messages }: HeroProps) {
     });
   }, [url, ready]);
 
-  const handleDownload = () => {
+  const handleDownloadClick = () => {
+    if (!url) return;
+    setShowEmailGate(true);
+  };
+
+  const handleEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || submitting) return;
+
+    setSubmitting(true);
+    try {
+      await fetch("/api/lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+    } catch {
+      // Still allow download even if lead capture fails
+    }
+
+    // Download the QR code
     qrRef.current?.download({
       name: "qr-code",
       extension: "png",
     });
+
+    setSubmitting(false);
+    setDownloaded(true);
+    setShowEmailGate(false);
   };
 
   return (
@@ -120,13 +151,38 @@ export default function Hero({ locale, messages }: HeroProps) {
                   style={{ minHeight: 200 }}
                 />
 
-                {/* Download button */}
-                <button
-                  onClick={handleDownload}
-                  className="mt-4 w-full rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-800 transition-colors cursor-pointer"
-                >
-                  {messages.generatorDownload}
-                </button>
+                {/* Email gate or download button */}
+                {showEmailGate && !downloaded ? (
+                  <form onSubmit={handleEmailSubmit} className="mt-4 space-y-2">
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder={messages.generatorEmailPlaceholder}
+                      required
+                      autoFocus
+                      className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-400 focus:outline-none transition-colors"
+                    />
+                    <button
+                      type="submit"
+                      disabled={submitting || !email}
+                      className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700 transition-colors disabled:opacity-50 cursor-pointer"
+                    >
+                      {submitting ? "..." : messages.generatorEmailSubmit}
+                    </button>
+                    <p className="text-center text-xs text-gray-400">
+                      {messages.generatorEmailNote}
+                    </p>
+                  </form>
+                ) : (
+                  <button
+                    onClick={downloaded ? () => qrRef.current?.download({ name: "qr-code", extension: "png" }) : handleDownloadClick}
+                    disabled={!url}
+                    className="mt-4 w-full rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-800 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {messages.generatorDownload}
+                  </button>
+                )}
 
                 {/* Upsell */}
                 <div className="mt-4 rounded-lg bg-blue-50 px-4 py-3 text-center">

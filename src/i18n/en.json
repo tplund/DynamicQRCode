@@ -17,6 +17,9 @@
     "ctaSecondary": "See Pricing",
     "generatorPlaceholder": "Enter a URL...",
     "generatorDownload": "Download QR Code",
+    "generatorEmailPlaceholder": "Your email address",
+    "generatorEmailSubmit": "Send me the QR code",
+    "generatorEmailNote": "We'll send you the QR code and tips on dynamic QR codes",
     "generatorUpsell": "Want to change the link later?",
     "generatorUpsellCta": "Create a dynamic QR code — free"
   },
