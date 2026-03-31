@@ -47,19 +47,19 @@ interface Stats {
 
 function KpiCard({ label, value, sub, accent }: { label: string; value: string | number; sub?: string; accent?: string }) {
   return (
-    <div className="rounded-xl border border-neutral-800 bg-neutral-900 p-5">
-      <p className="text-xs font-medium uppercase tracking-wider text-neutral-500">{label}</p>
-      <p className={`mt-2 text-2xl font-bold ${accent || "text-white"}`}>{value}</p>
-      {sub && <p className="mt-1 text-xs text-neutral-500">{sub}</p>}
+    <div className="rounded-xl border border-gray-200 bg-white shadow-sm p-5">
+      <p className="text-xs font-medium uppercase tracking-wider text-gray-500">{label}</p>
+      <p className={`mt-2 text-2xl font-bold ${accent || "text-gray-900"}`}>{value}</p>
+      {sub && <p className="mt-1 text-xs text-gray-500">{sub}</p>}
     </div>
   );
 }
 
 function PlanBadge({ plan }: { plan: string }) {
   const colors: Record<string, string> = {
-    free: "bg-neutral-700/50 text-neutral-400",
-    pro: "bg-blue-500/10 text-blue-400",
-    business: "bg-emerald-500/10 text-emerald-400",
+    free: "bg-gray-100 text-gray-600",
+    pro: "bg-blue-50 text-blue-700",
+    business: "bg-emerald-50 text-emerald-700",
   };
   return (
     <span className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${colors[plan] || colors.free}`}>
@@ -69,7 +69,7 @@ function PlanBadge({ plan }: { plan: string }) {
 }
 
 function SectionHeader({ children }: { children: React.ReactNode }) {
-  return <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-500">{children}</h2>;
+  return <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-500">{children}</h2>;
 }
 
 export default function EconomyDashboard() {
@@ -100,15 +100,15 @@ export default function EconomyDashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="h-5 w-5 animate-spin rounded-full border-2 border-neutral-700 border-t-white" />
+        <div className="h-5 w-5 animate-spin rounded-full border-2 border-gray-200 border-t-gray-900" />
       </div>
     );
   }
 
   if (error || !stats) {
     return (
-      <div className="rounded-xl border border-red-900/50 bg-red-950/20 p-6 text-center">
-        <p className="text-sm text-red-400">Kunne ikke hente data: {error}</p>
+      <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-center">
+        <p className="text-sm text-red-600">Kunne ikke hente data: {error}</p>
       </div>
     );
   }
@@ -134,16 +134,16 @@ export default function EconomyDashboard() {
     <div>
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-white">Økonomi</h1>
-          <p className="mt-0.5 text-sm text-neutral-500">Overblik over brugere, omsætning og aktivitet</p>
+          <h1 className="text-xl font-semibold text-gray-900">Økonomi</h1>
+          <p className="mt-0.5 text-sm text-gray-500">Overblik over brugere, omsætning og aktivitet</p>
         </div>
 
         {/* Tab toggle */}
-        <div className="flex rounded-lg border border-neutral-800 bg-neutral-900 p-0.5">
+        <div className="flex rounded-lg border border-gray-200 bg-white p-0.5">
           <button
             onClick={() => setTab("overview")}
             className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer ${
-              tab === "overview" ? "bg-white/10 text-white" : "text-neutral-500 hover:text-neutral-300"
+              tab === "overview" ? "bg-gray-100 text-gray-900" : "text-gray-500 hover:text-gray-900"
             }`}
           >
             Overblik
@@ -151,7 +151,7 @@ export default function EconomyDashboard() {
           <button
             onClick={() => setTab("users")}
             className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer ${
-              tab === "users" ? "bg-white/10 text-white" : "text-neutral-500 hover:text-neutral-300"
+              tab === "users" ? "bg-gray-100 text-gray-900" : "text-gray-500 hover:text-gray-900"
             }`}
           >
             Brugere
@@ -172,13 +172,13 @@ export default function EconomyDashboard() {
               label="Betalende"
               value={stats.users.paying}
               sub={`${totalUsers > 0 ? Math.round((stats.users.paying / totalUsers) * 100) : 0}% konvertering`}
-              accent="text-emerald-400"
+              accent="text-emerald-600"
             />
             <KpiCard
               label="MRR"
               value={`$${stats.mrr}`}
               sub={`$${stats.mrr * 12}/år`}
-              accent="text-emerald-400"
+              accent="text-emerald-600"
             />
             <KpiCard
               label="QR-koder"
@@ -197,9 +197,9 @@ export default function EconomyDashboard() {
                 { label: "Denne mnd", value: stats.scans.thisMonth },
                 { label: "Total", value: stats.scans.total },
               ].map((item) => (
-                <div key={item.label} className="rounded-xl border border-neutral-800 bg-neutral-900 px-4 py-3">
-                  <p className="text-xl font-bold text-white tabular-nums">{item.value.toLocaleString()}</p>
-                  <p className="text-xs text-neutral-500">{item.label}</p>
+                <div key={item.label} className="rounded-xl border border-gray-200 bg-white shadow-sm px-4 py-3">
+                  <p className="text-xl font-bold text-gray-900 tabular-nums">{item.value.toLocaleString()}</p>
+                  <p className="text-xs text-gray-500">{item.label}</p>
                 </div>
               ))}
             </div>
@@ -208,41 +208,41 @@ export default function EconomyDashboard() {
           {/* User Distribution */}
           <div className="mb-8">
             <SectionHeader>Brugerfordeling</SectionHeader>
-            <div className="overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900">
+            <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-neutral-800">
-                    <th className="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">Plan</th>
-                    <th className="px-5 py-3 text-right text-xs font-medium uppercase tracking-wider text-neutral-500">Brugere</th>
-                    <th className="px-5 py-3 text-right text-xs font-medium uppercase tracking-wider text-neutral-500">%</th>
-                    <th className="px-5 py-3 text-right text-xs font-medium uppercase tracking-wider text-neutral-500">QR</th>
-                    <th className="px-5 py-3 text-right text-xs font-medium uppercase tracking-wider text-neutral-500">Scans</th>
+                  <tr className="border-b border-gray-200">
+                    <th className="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Plan</th>
+                    <th className="px-5 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">Brugere</th>
+                    <th className="px-5 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">%</th>
+                    <th className="px-5 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">QR</th>
+                    <th className="px-5 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">Scans</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-neutral-800/50">
+                <tbody className="divide-y divide-gray-100">
                   {planRows.map((plan) => (
                     <tr key={plan}>
                       <td className="px-5 py-3"><PlanBadge plan={plan} /></td>
-                      <td className="px-5 py-3 text-sm text-right font-medium text-neutral-200 tabular-nums">
+                      <td className="px-5 py-3 text-sm text-right font-medium text-gray-700 tabular-nums">
                         {stats.users.byPlan[plan] ?? 0}
                       </td>
-                      <td className="px-5 py-3 text-sm text-right text-neutral-500 tabular-nums">
+                      <td className="px-5 py-3 text-sm text-right text-gray-500 tabular-nums">
                         {totalUsers > 0 ? Math.round(((stats.users.byPlan[plan] ?? 0) / totalUsers) * 100) : 0}%
                       </td>
-                      <td className="px-5 py-3 text-sm text-right text-neutral-400 tabular-nums">
+                      <td className="px-5 py-3 text-sm text-right text-gray-500 tabular-nums">
                         {stats.qrCodes.byPlan[plan] ?? 0}
                       </td>
-                      <td className="px-5 py-3 text-sm text-right text-neutral-400 tabular-nums">
+                      <td className="px-5 py-3 text-sm text-right text-gray-500 tabular-nums">
                         {(stats.scans.byPlan[plan] ?? 0).toLocaleString()}
                       </td>
                     </tr>
                   ))}
-                  <tr className="bg-white/[0.02]">
-                    <td className="px-5 py-3 text-xs font-semibold uppercase text-neutral-400">Total</td>
-                    <td className="px-5 py-3 text-sm text-right font-bold text-white tabular-nums">{totalUsers}</td>
-                    <td className="px-5 py-3 text-sm text-right text-neutral-500">100%</td>
-                    <td className="px-5 py-3 text-sm text-right font-bold text-white tabular-nums">{stats.qrCodes.total}</td>
-                    <td className="px-5 py-3 text-sm text-right font-bold text-white tabular-nums">{stats.scans.total.toLocaleString()}</td>
+                  <tr className="bg-gray-50">
+                    <td className="px-5 py-3 text-xs font-semibold uppercase text-gray-500">Total</td>
+                    <td className="px-5 py-3 text-sm text-right font-bold text-gray-900 tabular-nums">{totalUsers}</td>
+                    <td className="px-5 py-3 text-sm text-right text-gray-500">100%</td>
+                    <td className="px-5 py-3 text-sm text-right font-bold text-gray-900 tabular-nums">{stats.qrCodes.total}</td>
+                    <td className="px-5 py-3 text-sm text-right font-bold text-gray-900 tabular-nums">{stats.scans.total.toLocaleString()}</td>
                   </tr>
                 </tbody>
               </table>
@@ -252,28 +252,28 @@ export default function EconomyDashboard() {
           {/* Latest Signups */}
           <div>
             <SectionHeader>Seneste tilmeldinger</SectionHeader>
-            <div className="overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900">
+            <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-neutral-800">
-                    <th className="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">Email</th>
-                    <th className="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">Plan</th>
-                    <th className="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">Tilmeldt</th>
-                    <th className="px-5 py-3 text-right text-xs font-medium uppercase tracking-wider text-neutral-500">QR</th>
+                  <tr className="border-b border-gray-200">
+                    <th className="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Email</th>
+                    <th className="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Plan</th>
+                    <th className="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Tilmeldt</th>
+                    <th className="px-5 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">QR</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-neutral-800/50">
+                <tbody className="divide-y divide-gray-100">
                   {stats.latestUsers.map((user) => (
-                    <tr key={user.id} className="hover:bg-white/[0.02] transition-colors">
-                      <td className="px-5 py-3 text-sm text-neutral-200">{user.email}</td>
+                    <tr key={user.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-5 py-3 text-sm text-gray-700">{user.email}</td>
                       <td className="px-5 py-3"><PlanBadge plan={user.plan} /></td>
-                      <td className="px-5 py-3 text-sm text-neutral-500">
+                      <td className="px-5 py-3 text-sm text-gray-500">
                         {new Date(user.createdAt).toLocaleDateString("da-DK", {
                           day: "numeric",
                           month: "short",
                         })}
                       </td>
-                      <td className="px-5 py-3 text-sm text-right text-neutral-400 tabular-nums">{user.qrCount}</td>
+                      <td className="px-5 py-3 text-sm text-right text-gray-500 tabular-nums">{user.qrCount}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -285,7 +285,7 @@ export default function EconomyDashboard() {
         /* Users tab */
         <div>
           <div className="mb-4 flex items-center gap-2">
-            <span className="text-xs text-neutral-500">Sortér:</span>
+            <span className="text-xs text-gray-500">Sorter:</span>
             {[
               { key: "scans" as const, label: "Scans" },
               { key: "qr" as const, label: "QR-koder" },
@@ -296,8 +296,8 @@ export default function EconomyDashboard() {
                 onClick={() => setSortBy(s.key)}
                 className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer ${
                   sortBy === s.key
-                    ? "bg-white/10 text-white"
-                    : "text-neutral-500 hover:text-neutral-300"
+                    ? "bg-gray-100 text-gray-900"
+                    : "text-gray-500 hover:text-gray-900"
                 }`}
               >
                 {s.label}
@@ -305,29 +305,29 @@ export default function EconomyDashboard() {
             ))}
           </div>
 
-          <div className="overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900">
+          <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-neutral-800">
-                  <th className="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">Email</th>
-                  <th className="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">Plan</th>
-                  <th className="px-5 py-3 text-right text-xs font-medium uppercase tracking-wider text-neutral-500">QR</th>
-                  <th className="px-5 py-3 text-right text-xs font-medium uppercase tracking-wider text-neutral-500">Scans</th>
-                  <th className="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">Oprettet</th>
+                <tr className="border-b border-gray-200">
+                  <th className="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Email</th>
+                  <th className="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Plan</th>
+                  <th className="px-5 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">QR</th>
+                  <th className="px-5 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">Scans</th>
+                  <th className="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Oprettet</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-neutral-800/50">
+              <tbody className="divide-y divide-gray-100">
                 {sortedUsers.map((user) => (
-                  <tr key={user.id} className="hover:bg-white/[0.02] transition-colors">
-                    <td className="px-5 py-3 text-sm text-neutral-200">{user.email}</td>
+                  <tr key={user.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-5 py-3 text-sm text-gray-700">{user.email}</td>
                     <td className="px-5 py-3"><PlanBadge plan={user.plan} /></td>
-                    <td className="px-5 py-3 text-sm text-right text-neutral-400 tabular-nums">{user.qrCount}</td>
+                    <td className="px-5 py-3 text-sm text-right text-gray-500 tabular-nums">{user.qrCount}</td>
                     <td className="px-5 py-3 text-sm text-right tabular-nums">
-                      <span className={user.scanCount > 1000 ? "text-amber-400 font-medium" : "text-neutral-400"}>
+                      <span className={user.scanCount > 1000 ? "text-amber-600 font-medium" : "text-gray-500"}>
                         {user.scanCount.toLocaleString()}
                       </span>
                     </td>
-                    <td className="px-5 py-3 text-sm text-neutral-500">
+                    <td className="px-5 py-3 text-sm text-gray-500">
                       {new Date(user.createdAt).toLocaleDateString("da-DK", {
                         day: "numeric",
                         month: "short",
