@@ -47,6 +47,27 @@ export const authOptions: NextAuthOptions = {
         token.role = (user as any).role;
         token.plan = (user as any).plan;
       }
+
+      // Refresh role and plan from DB periodically (every 5 minutes)
+      const now = Math.floor(Date.now() / 1000);
+      const lastRefresh = (token.refreshedAt as number) || 0;
+      if (now - lastRefresh > 300 && token.id) {
+        try {
+          const [freshUser] = await db
+            .select({ role: users.role, plan: users.plan })
+            .from(users)
+            .where(eq(users.id, token.id as string))
+            .limit(1);
+          if (freshUser) {
+            token.role = freshUser.role;
+            token.plan = freshUser.plan;
+          }
+          token.refreshedAt = now;
+        } catch {
+          // If DB fails, keep existing token values
+        }
+      }
+
       return token;
     },
     async session({ session, token }) {
