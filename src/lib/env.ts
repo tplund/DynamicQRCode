@@ -7,12 +7,11 @@ const envSchema = z.object({
   // Auth (used by seed script to create initial admin)
   AUTH_EMAIL: z.string().optional(),
   AUTH_PASSWORD: z.string().optional(),
-  // Stripe (all optional — app works without Stripe)
-  STRIPE_SECRET_KEY: z.string().optional(),
-  STRIPE_WEBHOOK_SECRET: z.string().optional(),
-  STRIPE_PRICE_PRO: z.string().optional(),
-  STRIPE_PRICE_BUSINESS: z.string().optional(),
-  // Registration (defaults to enabled when Stripe is configured)
+  // LemonSqueezy (all optional — app works without payments)
+  LEMONSQUEEZY_API_KEY: z.string().optional(),
+  LEMONSQUEEZY_STORE_ID: z.string().optional(),
+  LEMONSQUEEZY_WEBHOOK_SECRET: z.string().optional(),
+  // Registration
   REGISTRATION_ENABLED: z.enum(["true", "false"]).optional(),
 });
 
@@ -30,6 +29,6 @@ export const env = validateEnv();
 export function isRegistrationEnabled(): boolean {
   if (process.env.REGISTRATION_ENABLED === "true") return true;
   if (process.env.REGISTRATION_ENABLED === "false") return false;
-  // Default: enabled when Stripe is configured
-  return !!process.env.STRIPE_SECRET_KEY;
+  // Default: enabled when LemonSqueezy is configured
+  return !!process.env.LEMONSQUEEZY_API_KEY;
 }

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { canCreateQrCode } from "@/lib/plan-limits";
-import { isStripeEnabled } from "@/lib/stripe";
+import { isRegistrationEnabled } from "@/lib/env";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -16,6 +16,6 @@ export async function GET() {
     ...limits,
     plan: session.user.plan,
     role: session.user.role,
-    stripeEnabled: isStripeEnabled(),
+    paymentsEnabled: !!process.env.LEMONSQUEEZY_API_KEY,
   });
 }
