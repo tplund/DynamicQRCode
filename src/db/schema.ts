@@ -5,7 +5,7 @@ export const users = pgTable("users", {
   id: uuid("id").defaultRandom().primaryKey(),
   email: text("email").notNull().unique(),
   name: text("name"),
-  passwordHash: text("password_hash").notNull(),
+  passwordHash: text("password_hash"), // nullable — OAuth users won't have one
   role: text("role").notNull().default("user"), // 'user' | 'super_admin'
   plan: text("plan").notNull().default("free"), // 'free' | 'pro' | 'business'
   stripeCustomerId: text("stripe_customer_id").unique(),

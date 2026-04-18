@@ -27,8 +27,6 @@ function validateEnv() {
 export const env = validateEnv();
 
 export function isRegistrationEnabled(): boolean {
-  if (process.env.REGISTRATION_ENABLED === "true") return true;
-  if (process.env.REGISTRATION_ENABLED === "false") return false;
-  // Default: enabled when LemonSqueezy is configured
-  return !!process.env.LEMONSQUEEZY_API_KEY;
+  // Explicit opt-out via REGISTRATION_ENABLED=false, otherwise enabled
+  return process.env.REGISTRATION_ENABLED !== "false";
 }

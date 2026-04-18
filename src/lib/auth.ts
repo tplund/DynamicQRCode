@@ -1,9 +1,14 @@
-import type { NextAuthOptions } from "next-auth";
+import type { NextAuthOptions, Profile } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import { db } from "@/db";
 import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
+import { sendWelcomeEmail } from "@/lib/transactional-emails";
+
+const googleEnabled =
+  !!process.env.GOOGLE_CLIENT_ID && !!process.env.GOOGLE_CLIENT_SECRET;
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -22,7 +27,7 @@ export const authOptions: NextAuthOptions = {
           .where(eq(users.email, credentials.email.toLowerCase()))
           .limit(1);
 
-        if (!user) return null;
+        if (!user || !user.passwordHash) return null;
 
         const isValid = await bcrypt.compare(
           credentials.password,
@@ -39,13 +44,65 @@ export const authOptions: NextAuthOptions = {
         };
       },
     }),
+    ...(googleEnabled
+      ? [
+          GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID!,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+          }),
+        ]
+      : []),
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
+    async signIn({ user, account, profile }) {
+      // For Google OAuth: auto-create user in DB on first sign-in
+      if (account?.provider === "google" && user.email) {
+        const email = user.email.toLowerCase();
+        const [existing] = await db
+          .select()
+          .from(users)
+          .where(eq(users.email, email))
+          .limit(1);
+
+        if (!existing) {
+          const googleProfile = profile as Profile & { picture?: string };
+          await db.insert(users).values({
+            email,
+            name: user.name || googleProfile?.name || email,
+            passwordHash: null, // OAuth users have no password
+            role: "user",
+            plan: "free",
+          });
+
+          // Fire-and-forget welcome email
+          sendWelcomeEmail(email, user.name || email).catch((err) =>
+            console.error("[auth] Welcome email failed:", err)
+          );
+        }
+      }
+      return true;
+    },
+    async jwt({ token, user, account }) {
+      // Credentials sign-in: user already has id/role/plan from authorize()
+      const userWithRole = user as { role?: string; plan?: string } | undefined;
+      if (user && userWithRole?.role) {
         token.id = user.id;
-        token.role = (user as any).role;
-        token.plan = (user as any).plan;
+        token.role = userWithRole.role;
+        token.plan = userWithRole.plan ?? "free";
+      }
+
+      // OAuth sign-in: fetch from DB (user object is from provider, not our DB)
+      if (account?.provider === "google" && user?.email) {
+        const [dbUser] = await db
+          .select()
+          .from(users)
+          .where(eq(users.email, user.email.toLowerCase()))
+          .limit(1);
+        if (dbUser) {
+          token.id = dbUser.id;
+          token.role = dbUser.role;
+          token.plan = dbUser.plan;
+        }
       }
 
       // Refresh role and plan from DB periodically (every 5 minutes)
@@ -88,3 +145,5 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
+
+export const isGoogleEnabled = googleEnabled;
